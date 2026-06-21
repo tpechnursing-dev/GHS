@@ -1,10 +1,4 @@
-<!DOCTYPE html>
-<html lang="zh-Hant">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>水劑表示牌製作產生器｜仁愛院區</title>
-<style>
+<!DOCTYPE html>\n<html lang="zh-Hant">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<title>水劑表示牌製作產生器｜仁愛院區</title>\n<style>
 :root{--bg:#f3f3ef;--panel:#fff;--ink:#16140f;--muted:#8f8f86;--line:#e3e3dc;--soft:#f7f7f3;--red:#d5202a;}
 *{box-sizing:border-box}html,body{margin:0;padding:0}
 body{background:var(--bg);color:var(--ink);font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei","Heiti TC",sans-serif;-webkit-font-smoothing:antialiased}
@@ -14,14 +8,14 @@ header.top{display:flex;align-items:center;gap:14px;padding-bottom:18px;border-b
 .eyebrow{font-size:10.5px;color:var(--muted);letter-spacing:4px;font-weight:600;margin-bottom:3px}
 h1{font-size:21px;margin:0;letter-spacing:2px;font-weight:800}
 .tabs{display:flex;margin-bottom:22px;border:1.4px solid var(--ink);border-radius:8px;width:max-content;overflow:hidden}
-.tab{appearance:none;border:none;background:#fff;color:var(--ink);font:inherit;font-weight:700;font-size:14px;padding:9px 26px;cursor:pointer;transition:.12s}
+.tab{appearance:none;border:none;background:#fff;color:var(--ink);font:inherit;font-weight:700;font-size:14px;padding:9px 24px;cursor:pointer;transition:.12s}
 .tab+.tab{border-left:1.4px solid var(--ink)}
 .tab[aria-selected="true"]{background:var(--ink);color:#fff}
 .tab:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 .grid{display:grid;grid-template-columns:370px 1fr;gap:24px;align-items:start}
 @media(max-width:880px){.grid{grid-template-columns:1fr}}
 .card{background:var(--panel);border:1.4px solid var(--line);border-radius:10px;padding:20px}
-.card h2{font-size:11px;letter-spacing:3px;color:var(--muted);margin:0 0 16px;font-weight:700;text-transform:uppercase}
+.card h2{font-size:11px;letter-spacing:3px;color:var(--muted);margin:0 0 14px;font-weight:700;text-transform:uppercase}
 .field{margin-bottom:15px}
 .field>label{display:block;font-size:12px;font-weight:700;margin-bottom:6px;letter-spacing:1px}
 input[type=text]{width:100%;font:inherit;font-size:15px;padding:10px 12px;border:1.4px solid var(--line);border-radius:7px;background:#fff;color:var(--ink)}
@@ -31,13 +25,14 @@ input:focus{outline:none;border-color:var(--ink)}
 .note{font-size:11.5px;color:var(--muted);margin-top:-4px;margin-bottom:15px;line-height:1.5}
 .ghs-pick{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .ghs-opt{position:relative;display:flex;flex-direction:column;align-items:center;gap:5px;border:1.4px solid var(--line);border-radius:8px;padding:9px 4px 7px;cursor:pointer;background:#fff;transition:.12s}
-.ghs-opt svg{width:40px;height:40px}.ghs-opt span{font-size:11px;color:var(--muted);line-height:1.15;text-align:center}
+.ghs-opt svg{width:38px;height:38px}.ghs-opt span{font-size:11px;color:var(--muted);line-height:1.15;text-align:center}
 .ghs-opt.on{border-color:var(--ink);background:var(--soft)}
 .ghs-opt input{position:absolute;opacity:0;width:0;height:0}
 .actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:6px}
 .btn{appearance:none;border:1.4px solid var(--ink);font:inherit;font-weight:700;font-size:14px;padding:11px 16px;border-radius:7px;cursor:pointer;transition:.12s}
 .btn.primary{background:var(--ink);color:#fff}.btn.primary:hover{background:#000}
 .btn.ghost{background:#fff;color:var(--ink)}.btn.ghost:hover{background:var(--soft)}
+.btn.sm{padding:8px 13px;font-size:13px}
 .btn.danger{background:#fff;color:var(--red);border-color:#eccac8}
 .btn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 .stage-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
@@ -55,6 +50,28 @@ textarea.bulk-in:focus{outline:none;border-color:var(--ink)}
 .row-del{flex:0 0 auto;border:1.4px solid #eccac8;background:#fff;color:var(--red);border-radius:7px;width:34px;height:34px;cursor:pointer;font-size:18px}
 .empty{color:var(--muted);font-size:13px;text-align:center;padding:28px 10px;border:1.4px dashed var(--line);border-radius:8px;background:var(--soft)}
 footer.foot{margin-top:34px;text-align:center;color:var(--muted);font-size:11.5px;letter-spacing:2px}
+/* quick pick */
+.qp-card{margin-bottom:22px}
+.qp-hint{font-size:11.5px;color:var(--muted);margin:0 0 12px;line-height:1.5}
+.qp-search{width:100%;font:inherit;font-size:15px;padding:11px 14px;border:1.4px solid var(--line);border-radius:8px;background:#fff;margin-bottom:12px}
+.qp-search:focus{outline:none;border-color:var(--ink)}
+.qp-list{display:flex;flex-wrap:wrap;gap:8px;max-height:188px;overflow:auto;padding:2px}
+.qp-item{display:inline-flex;align-items:center;gap:8px;border:1.4px solid var(--line);background:#fff;border-radius:8px;padding:7px 11px;cursor:pointer;font:inherit;font-size:13.5px;font-weight:600;color:var(--ink)}
+.qp-item:hover{border-color:var(--ink);background:var(--soft)}
+.qp-ic{display:inline-flex;gap:3px}.qp-ic svg{width:18px;height:18px}
+.qp-nm{white-space:nowrap}
+.qp-empty{color:var(--muted);font-size:13px;padding:14px}
+/* library manager */
+.lib-toolbar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
+.lib-toolbar .qp-search{margin:0;flex:1;min-width:180px}
+.lib-row{display:flex;align-items:center;gap:10px;border:1.4px solid var(--line);border-radius:8px;padding:8px 10px;margin-bottom:8px;background:#fff}
+.lib-name{flex:0 0 240px;font:inherit;font-size:14px;font-weight:700;padding:7px 10px;border:1.4px solid var(--line);border-radius:6px;color:var(--ink)}
+.lib-name:focus{outline:none;border-color:var(--ink)}
+.lib-togs{display:flex;gap:2px;flex:1;flex-wrap:wrap}
+.lib-tog{border:none;background:transparent;padding:1px;cursor:pointer;opacity:.22;border-radius:5px;line-height:0}
+.lib-tog.on{opacity:1;background:#fdecec}
+.lib-tog svg{width:26px;height:26px;display:block}
+@media(max-width:640px){.lib-name{flex-basis:140px}}
 #printRoot{position:absolute;left:0;top:0;width:100%}
 @media screen{#printRoot{display:none}}
 .print-page{display:flex;flex-direction:column;gap:6mm;align-items:center;page-break-after:always}
@@ -62,74 +79,102 @@ footer.foot{margin-top:34px;text-align:center;color:var(--muted);font-size:11.5p
 .plabel{width:194mm}.plabel svg{width:194mm;height:auto;display:block}
 @media print{body{background:#fff}body>*:not(#printRoot){display:none!important}#printRoot{display:block}@page{size:A4 portrait;margin:9mm}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
-</style>
-</head>
-<body>
-<div class="wrap">
+</style>\n</head>\n<body>\n<div class="wrap">
   <header class="top">
     <span class="brandmark" id="brandmark"></span>
-    <div><div class="eyebrow">藥劑安全標示　／　HAZARDOUS MATERIAL</div><h1>水劑表示牌製作產生器</h1></div>
+    <div><div class="eyebrow">藥劑安全標示　／　仁愛院區</div><h1>水劑表示牌製作產生器</h1></div>
   </header>
 
   <div class="tabs" role="tablist">
     <button class="tab" id="tab-single" role="tab" aria-selected="true" onclick="switchTab('single')">單張製作</button>
     <button class="tab" id="tab-batch" role="tab" aria-selected="false" onclick="switchTab('batch')">批次製作</button>
+    <button class="tab" id="tab-lib" role="tab" aria-selected="false" onclick="switchTab('lib')">品項庫</button>
   </div>
 
-  <section id="panel-single" class="grid">
-    <div class="card">
-      <h2>填寫內容 — 單張</h2>
-      <div class="field"><label for="s_name">水劑名稱</label><input type="text" id="s_name" value="克菌寧殺菌液 2%" oninput="renderSingle()"></div>
-      <div class="field"><label>庫存設定量（固定列印）</label>
-        <div class="twocol">
-          <div><div class="sublbl">最大量 MAX</div><input type="text" id="s_max" value="20 瓶" oninput="renderSingle()"></div>
-          <div><div class="sublbl">最小量 MIN</div><input type="text" id="s_min" value="5 瓶" oninput="renderSingle()"></div>
+  <!-- SINGLE -->
+  <section id="panel-single">
+    <div class="card qp-card">
+      <h2>常備品項快捷 — 點選帶入</h2>
+      <p class="qp-hint">點一下品項即帶入「水劑名稱＋GHS 危害圖示」，可再自行調整。庫存品項可在「品項庫」分頁維護。</p>
+      <input type="text" id="qpS" class="qp-search" placeholder="搜尋品項（例：酒精、鹽酸、氧氣、克菌寧）…" oninput="renderQP('single')">
+      <div class="qp-list" id="qpListSingle"></div>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <h2>填寫內容 — 單張</h2>
+        <div class="field"><label for="s_name">水劑名稱</label><input type="text" id="s_name" value="克菌寧殺菌液 2%" oninput="renderSingle()"></div>
+        <div class="field"><label>庫存設定量（固定列印）</label>
+          <div class="twocol">
+            <div><div class="sublbl">最大量 MAX</div><input type="text" id="s_max" value="20 瓶" oninput="renderSingle()"></div>
+            <div><div class="sublbl">最小量 MIN</div><input type="text" id="s_min" value="5 瓶" oninput="renderSingle()"></div>
+          </div>
+        </div>
+        <div class="note">到期日期不印在表上，採數字方格留白——護貝後以白板筆／油性筆填寫，可重複擦寫換新。</div>
+        <div class="field"><label>GHS 危害圖示</label><div class="ghs-pick" id="ghsSingle"></div></div>
+        <div class="actions">
+          <button class="btn primary" onclick="printOne(false)">列印這張</button>
+          <button class="btn ghost" onclick="printOne(true)">列印整頁 4 張</button>
+          <button class="btn ghost" onclick="pushToBatch()">＋ 加入批次</button>
         </div>
       </div>
-      <div class="note">到期日期不印在表上，採數字方格留白——護貝後以白板筆／油性筆填寫，可重複擦寫換新。</div>
-      <div class="field"><label>危害分類標誌</label><div class="ghs-pick" id="ghsSingle"></div></div>
-      <div class="actions">
-        <button class="btn primary" onclick="printOne(false)">列印這張</button>
-        <button class="btn ghost" onclick="printOne(true)">列印整頁 4 張</button>
-        <button class="btn ghost" onclick="pushToBatch()">＋ 加入批次</button>
+      <div class="card">
+        <div class="stage-head"><h2 style="margin:0">即時預覽</h2><span class="tip">A4 原寸列印・每頁 4 張</span></div>
+        <div class="pv-stage"><div class="label-wrap" id="pvLabel"></div></div>
       </div>
-    </div>
-    <div class="card">
-      <div class="stage-head"><h2 style="margin:0">即時預覽</h2><span class="tip">A4 原寸列印・每頁 4 張</span></div>
-      <div class="pv-stage"><div class="label-wrap" id="pvLabel"></div></div>
     </div>
   </section>
 
-  <section id="panel-batch" class="grid" style="display:none">
-    <div class="card">
-      <h2>新增到清單 — 批次</h2>
-      <div class="field"><label for="b_name">水劑名稱</label><input type="text" id="b_name" placeholder="例：75% 酒精性乾洗手液"></div>
-      <div class="field"><label>庫存設定量</label>
-        <div class="twocol">
-          <div><div class="sublbl">最大量 MAX</div><input type="text" id="b_max" placeholder="20 瓶"></div>
-          <div><div class="sublbl">最小量 MIN</div><input type="text" id="b_min" placeholder="5 瓶"></div>
+  <!-- BATCH -->
+  <section id="panel-batch" style="display:none">
+    <div class="card qp-card">
+      <h2>常備品項快捷 — 點選帶入下方表單</h2>
+      <p class="qp-hint">點品項帶入名稱與 GHS，填好最大／最小量後按「新增到清單」。</p>
+      <input type="text" id="qpB" class="qp-search" placeholder="搜尋品項…" oninput="renderQP('batch')">
+      <div class="qp-list" id="qpListBatch"></div>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <h2>新增到清單 — 批次</h2>
+        <div class="field"><label for="b_name">水劑名稱</label><input type="text" id="b_name" placeholder="例：75% 酒精性乾洗手液"></div>
+        <div class="field"><label>庫存設定量</label>
+          <div class="twocol">
+            <div><div class="sublbl">最大量 MAX</div><input type="text" id="b_max" placeholder="20 瓶"></div>
+            <div><div class="sublbl">最小量 MIN</div><input type="text" id="b_min" placeholder="5 瓶"></div>
+          </div>
+        </div>
+        <div class="field"><label>GHS 危害圖示</label><div class="ghs-pick" id="ghsBatch"></div></div>
+        <div class="actions"><button class="btn primary" onclick="addBatchRow()">＋ 新增到清單</button></div>
+        <div style="margin-top:18px">
+          <div class="field" style="margin-bottom:8px"><label for="b_bulk">批次貼上（一行一筆，格式：名稱，最大量，最小量）</label>
+            <textarea class="bulk-in" id="b_bulk" placeholder="克菌寧殺菌液 2%，20，5&#10;75% 酒精，12，3"></textarea></div>
+          <button class="btn ghost" onclick="bulkImport()">批次匯入</button>
         </div>
       </div>
-      <div class="field"><label>危害分類標誌（套用此筆與批次貼上）</label><div class="ghs-pick" id="ghsBatch"></div></div>
-      <div class="actions"><button class="btn primary" onclick="addBatchRow()">＋ 新增到清單</button></div>
-      <div style="margin-top:18px">
-        <div class="field" style="margin-bottom:8px"><label for="b_bulk">批次貼上（一行一筆，格式：名稱，最大量，最小量）</label>
-          <textarea class="bulk-in" id="b_bulk" placeholder="克菌寧殺菌液 2%，20，5&#10;75% 酒精，12，3&#10;次氯酸鈉稀釋液，8，2"></textarea></div>
-        <button class="btn ghost" onclick="bulkImport()">批次匯入</button>
+      <div class="card">
+        <div class="list-head"><h2 style="margin:0">列印清單 <span class="count-pill" id="bCount">0</span></h2>
+          <div style="display:flex;gap:8px"><button class="btn primary" onclick="printBatch()">列印全部</button><button class="btn danger" onclick="clearBatch()">清空</button></div></div>
+        <div id="batchList"></div>
       </div>
     </div>
+  </section>
+
+  <!-- LIBRARY -->
+  <section id="panel-lib" style="display:none">
     <div class="card">
-      <div class="list-head"><h2 style="margin:0">列印清單 <span class="count-pill" id="bCount">0</span></h2>
-        <div style="display:flex;gap:8px"><button class="btn primary" onclick="printBatch()">列印全部</button><button class="btn danger" onclick="clearBatch()">清空</button></div></div>
-      <div id="batchList"></div>
+      <h2>品項庫維護 — 名稱與 GHS 可修正、存檔</h2>
+      <p class="qp-hint">點圖示可開／關該品項的 GHS（亮起＝套用）；名稱可直接修改；修改會自動存到此瀏覽器。GHS 預設依常見 SDS 分類，<b>請以實際產品 SDS 為準</b>。</p>
+      <div class="lib-toolbar">
+        <input type="text" id="libSearch" class="qp-search" placeholder="搜尋品項…" oninput="renderLibMgr()">
+        <button class="btn sm primary" onclick="addLib()">＋ 新增品項</button>
+        <button class="btn sm ghost" onclick="resetLib()">↺ 還原內建清單</button>
+        <span class="count-pill" id="libCount">0</span>
+      </div>
+      <div id="libList"></div>
     </div>
   </section>
 
   <footer class="foot">© 鄭瑞賢 製作・版權所有</footer>
-</div>
-<div id="printRoot"></div>
-
-<script>
+</div>\n<div id="printRoot"></div>\n<script>
 var INK="#16140f",GRAY="#8f8f86",RED="#d5202a";
 var LOGO_INNER=
  '<g fill="#0a6135"><rect x="18" y="6" width="29" height="121" rx="14.5"/>'+
@@ -138,7 +183,6 @@ var LOGO_INNER=
  '<path fill="#143a82" d="M123,57 C132,80 112,100 78,106 C58,109 42,108 29,104 C42,104 58,103 78,99 C110,90 122,70 123,57 Z"/>'+
  '<path fill="#f6d200" d="M24,80 C40,110 80,124 110,114 C120,110 126,105 128,96 C122,104 100,114 74,110 C52,106 38,96 28,84 C26,82 24,81 24,80 Z"/>';
 function logoSVG(){return '<svg viewBox="0 0 131 133" xmlns="http://www.w3.org/2000/svg">'+LOGO_INNER+'</svg>';}
-
 /* 標準 GHS 危害圖示（紅框白底黑符號・公開標準符號） */
 var GHS_FRAME='<rect x="17" y="17" width="66" height="66" rx="7" transform="rotate(45 50 50)" fill="#ffffff" stroke="#e60012" stroke-width="8"/>';
 var GHS={
@@ -155,7 +199,6 @@ var GHS={
 var GHS_ORDER=['flame','excl','oxid','corr','skull','gas','health','expl','env'];
 function ghsInner(k){return GHS_FRAME+GHS[k].sym;}
 function ghsIcon(k){return '<svg viewBox="0 0 100 100" width="40" height="40" xmlns="http://www.w3.org/2000/svg">'+ghsInner(k)+'</svg>';}
-
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
 function cjkW(s){var w=0;for(var i=0;i<s.length;i++)w+=/[\u0000-\u00ff]/.test(s[i])?0.56:1;return w;}
 function fitFont(s,b,base,mn){var w=cjkW(s)||1;return Math.max(mn,Math.min(base,b/w));}
@@ -170,7 +213,6 @@ function buildLabel(d){
   s+='<rect x="9" y="9" width="982" height="312" rx="2" fill="none" stroke="'+INK+'" stroke-width="2.5"/>';
   /* header */
   s+='<text x="46" y="54" font-size="22" font-weight="800" fill="'+INK+'" letter-spacing="7">藥劑安全標示</text>';
-  s+='<text x="48" y="76" font-size="11" font-weight="500" fill="'+GRAY+'" letter-spacing="3">HAZARDOUS MATERIAL　／　取扱注意</text>';
   s+='<svg x="901" y="32" width="46" height="47" viewBox="0 0 131 133">'+LOGO_INNER+'</svg>';
   s+='<text x="884" y="52" text-anchor="end" font-size="13" font-weight="600" fill="'+INK+'" letter-spacing="1">臺北市立聯合醫院</text>';
   s+='<text x="884" y="75" text-anchor="end" font-size="17" font-weight="800" fill="'+INK+'" letter-spacing="2">仁愛院區</text>';
@@ -182,7 +224,6 @@ function buildLabel(d){
   s+='<rect x="38" y="161" width="582" height="94" rx="6" fill="#fdf3f2" stroke="'+RED+'" stroke-width="2.2"/>';
   s+='<path d="M62 169 l12 20 h-24 z" fill="'+RED+'"/><rect x="60.6" y="176" width="2.8" height="7" fill="#fff"/><circle cx="62" cy="186" r="1.6" fill="#fff"/>';
   s+='<text x="82" y="184" font-size="14" font-weight="800" fill="'+RED+'" letter-spacing="2">到期日期　EXPIRY</text>';
-  s+='<text x="606" y="184" text-anchor="end" font-size="12" font-weight="800" fill="'+RED+'" letter-spacing="1">過期禁用</text>';
   s+='<text x="54" y="227" font-size="20" font-weight="700" fill="'+INK+'">民國</text>';
   var bx=112,i;
   for(i=0;i<3;i++){s+=box(bx);bx+=45;}
@@ -219,6 +260,7 @@ function renderGhsPicker(id,sel){
   });
 }
 function getGhs(id){var o=[];document.querySelectorAll('#'+id+' input:checked').forEach(function(i){o.push(i.value);});return o;}
+function setGhsChecks(id,arr){document.querySelectorAll('#'+id+' .ghs-opt').forEach(function(lab){var inp=lab.querySelector('input');var on=arr.indexOf(inp.value)>=0;inp.checked=on;lab.classList.toggle('on',on);});}
 
 function readSingle(){return{name:s_name.value.trim(),max:s_max.value.trim(),min:s_min.value.trim(),ghs:getGhs('ghsSingle')};}
 function renderSingle(){document.getElementById('pvLabel').innerHTML=buildLabel(readSingle());}
@@ -242,7 +284,7 @@ function clearBatch(){if(rows.length&&confirm('確定清空清單？')){rows=[];
 function renderBatch(){
   document.getElementById('bCount').textContent=rows.length;
   var list=document.getElementById('batchList');
-  if(!rows.length){list.innerHTML='<div class="empty">清單目前是空的。<br>用上方表單新增，或「批次貼上」一次匯入多筆。</div>';return;}
+  if(!rows.length){list.innerHTML='<div class="empty">清單目前是空的。<br>用上方表單或品項快捷新增，也可「批次貼上」匯入。</div>';return;}
   list.innerHTML=rows.map(function(d,i){
     return '<div class="row-card"><div class="row-thumb">'+buildLabel(d)+'</div>'+
       '<div class="row-meta"><div class="nm">'+esc(d.name)+'</div>'+
@@ -252,20 +294,135 @@ function renderBatch(){
 }
 function printBatch(){doPrint(rows);}
 
-function switchTab(w){var s=w==='single';
-  document.getElementById('panel-single').style.display=s?'grid':'none';
-  document.getElementById('panel-batch').style.display=s?'none':'grid';
-  document.getElementById('tab-single').setAttribute('aria-selected',s);
-  document.getElementById('tab-batch').setAttribute('aria-selected',!s);}
+/* ===== 品項庫 ===== */
+var DEFAULT_LIB=[
+ {n:'丙酮（有機溶劑）',g:['flame','excl']},
+ {n:'甲醛（10%中性福馬林）',g:['skull','health','corr']},
+ {n:'石油苯清',g:['flame','health','excl']},
+ {n:'乙醇 酒精75%（大瓶）',g:['flame','excl']},
+ {n:'乙醇 酒精75%（中瓶）',g:['flame','excl']},
+ {n:'乙醇 酒精75%（小瓶）',g:['flame','excl']},
+ {n:'乙醇 酒精95%',g:['flame','excl']},
+ {n:'乙醇（99%）',g:['flame','excl']},
+ {n:'乙醇（病理染色用溶劑）',g:['flame','excl']},
+ {n:'無水酒精',g:['flame','excl']},
+ {n:'薄荷油',g:['flame','excl']},
+ {n:'氯化氫（鹽酸）',g:['corr','excl']},
+ {n:'氯化氫（濃鹽酸 32%）',g:['corr','excl']},
+ {n:'乙酸乙酯（有機溶劑）',g:['flame','excl']},
+ {n:'過氧化氫（雙氧水）',g:['oxid','corr']},
+ {n:'氨水',g:['corr','env']},
+ {n:'次氯酸鈉（漂白水）',g:['corr','env']},
+ {n:'稀釋次氯酸鈉（漂白水）',g:['excl','env']},
+ {n:'二甲苯（有機溶劑）',g:['flame','excl','health']},
+ {n:'甲醯氨',g:['health']},
+ {n:'碘',g:['excl','env']},
+ {n:'安碘酒精液',g:['flame','excl']},
+ {n:'碘化鉀',g:['excl']},
+ {n:'醋酸（酢酸）',g:['flame','corr']},
+ {n:'冰醋酸',g:['flame','corr']},
+ {n:'甲醇（有機溶劑）',g:['flame','skull','health']},
+ {n:'硫酸（特定化學物質）',g:['corr']},
+ {n:'次亞氯酸／滅菌電解次氯酸水',g:['excl']},
+ {n:'甲酸',g:['corr','excl']},
+ {n:'乙醚（有機溶劑）',g:['flame','excl']},
+ {n:'乙腈',g:['flame','excl']},
+ {n:'硝酸（69-70%・特定化學物質）',g:['corr','oxid']},
+ {n:'超級柴油',g:['flame','health','env']},
+ {n:'清潔劑',g:['excl']},
+ {n:'異丙醇（有機溶劑）',g:['flame','excl']},
+ {n:'2-丁醇（有機溶劑）',g:['flame','excl']},
+ {n:'氫氧化鈉',g:['corr']},
+ {n:'氫氧化銨（25% 氨水）',g:['corr','env']},
+ {n:'磷酸（85-90%）',g:['corr']},
+ {n:'過氯酸（70%）',g:['oxid','corr']},
+ {n:'過醋酸',g:['oxid','corr','flame']},
+ {n:'三氟乙酸',g:['corr']},
+ {n:'草酸',g:['excl']},
+ {n:'過錳酸鉀',g:['oxid','env']},
+ {n:'硝酸銀',g:['oxid','corr','env']},
+ {n:'十二基硫酸鈉（SDS）',g:['flame','excl']},
+ {n:'2-硫巴比妥',g:['excl']},
+ {n:'肝素',g:[]},
+ {n:'磷酸氫二鈉',g:[]},
+ {n:'三聚甲醛',g:['flame','health','corr']},
+ {n:'安比西林鈉',g:['health']},
+ {n:'氫可體松',g:[]},
+ {n:'2-巰基乙醇',g:['skull','corr','env']},
+ {n:'甘油磷酸二鈉',g:[]},
+ {n:'丙酸乙酯',g:['flame','excl']},
+ {n:'三乙醇胺',g:['excl']},
+ {n:'皂素（Saponins）',g:['excl','health']},
+ {n:'二硫蘇糖醇（DTT）',g:['excl']},
+ {n:'蘇木精（Haematoxylin）',g:['excl']},
+ {n:'克菌寧殺菌液 2%',g:['flame','excl']},
+ {n:'克菌寧殺菌水溶液 2%',g:['excl']},
+ {n:'除蠟劑',g:['excl']},
+ {n:'硬光蠟',g:['excl']},
+ {n:'混合氣（H₂10%+CO₂10%+N₂80%）',g:['gas','flame']},
+ {n:'二氧化碳（CO₂）',g:['gas']},
+ {n:'氧氣',g:['gas','oxid']},
+ {n:'笑氣（一氧化二氮）',g:['gas','oxid']},
+ {n:'氮氣（N₂）',g:['gas']},
+ {n:'小瓶液態二氧化碳',g:['gas']},
+ {n:'天然氣',g:['flame','gas']},
+ {n:'液態氧',g:['gas','oxid']}
+];
+var LIB_KEY='xingyan_chem_lib_v1';
+var lib=[];
+function loadLib(){try{var s=localStorage.getItem(LIB_KEY);if(s){var a=JSON.parse(s);if(a&&a.length)return a;}}catch(e){}
+  return DEFAULT_LIB.map(function(x){return{n:x.n,g:x.g.slice()};});}
+function saveLib(){try{localStorage.setItem(LIB_KEY,JSON.stringify(lib));}catch(e){}}
 
-var s_name,s_max,s_min,b_name,b_max,b_min,b_bulk;
-function bindRefs(){['s_name','s_max','s_min','b_name','b_max','b_min','b_bulk'].forEach(function(id){window[id]=document.getElementById(id);});}
+function matchLib(q){q=(q||'').trim().toLowerCase();if(!q)return lib;return lib.filter(function(it){return it.n.toLowerCase().indexOf(q)>=0;});}
+function renderQP(target){
+  var inp=(target==='single'?qpS:qpB),items=matchLib(inp.value);
+  var html=items.map(function(it){
+    var idx=lib.indexOf(it);
+    var ic=it.g.map(function(k){return GHS[k]?ghsIcon(k):'';}).join('');
+    return '<button type="button" class="qp-item" onclick="pickLib('+idx+',\''+target+'\')"><span class="qp-nm">'+esc(it.n)+'</span><span class="qp-ic">'+ic+'</span></button>';
+  }).join('');
+  document.getElementById(target==='single'?'qpListSingle':'qpListBatch').innerHTML=html||'<div class="qp-empty">查無品項，可在「品項庫」新增。</div>';
+}
+function pickLib(i,target){var it=lib[i];if(!it)return;
+  if(target==='single'){s_name.value=it.n;setGhsChecks('ghsSingle',it.g);renderSingle();}
+  else{b_name.value=it.n;setGhsChecks('ghsBatch',it.g);try{b_max.focus();}catch(e){}}
+}
+function refreshQP(){if(window.qpS)renderQP('single');if(window.qpB)renderQP('batch');}
+
+function renderLibMgr(){
+  var q=(libSearch.value||'').toLowerCase();
+  document.getElementById('libCount').textContent=lib.length;
+  var idxs=[];for(var j=0;j<lib.length;j++){if(lib[j].n.toLowerCase().indexOf(q)>=0)idxs.push(j);}
+  var html=idxs.map(function(i){
+    var it=lib[i];
+    var togs=GHS_ORDER.map(function(k){var on=it.g.indexOf(k)>=0;
+      return '<button type="button" class="lib-tog'+(on?' on':'')+'" title="'+GHS[k].zh+'" onclick="toggleLibGhs('+i+',\''+k+'\')">'+ghsIcon(k)+'</button>';}).join('');
+    return '<div class="lib-row"><input class="lib-name" value="'+esc(it.n)+'" onchange="renameLib('+i+',this.value)"><div class="lib-togs">'+togs+'</div><button class="row-del" title="刪除" onclick="delLib('+i+')">×</button></div>';
+  }).join('');
+  document.getElementById('libList').innerHTML=html||'<div class="empty">查無品項。</div>';
+}
+function toggleLibGhs(i,k){var g=lib[i].g,p=g.indexOf(k);if(p>=0)g.splice(p,1);else g.push(k);saveLib();renderLibMgr();refreshQP();}
+function renameLib(i,v){lib[i].n=v.trim()||lib[i].n;saveLib();refreshQP();}
+function delLib(i){if(confirm('刪除「'+lib[i].n+'」？')){lib.splice(i,1);saveLib();renderLibMgr();refreshQP();}}
+function addLib(){lib.unshift({n:'新品項',g:[]});saveLib();if(libSearch)libSearch.value='';renderLibMgr();refreshQP();}
+function resetLib(){if(confirm('還原為內建清單？會清除自訂的修改。')){lib=DEFAULT_LIB.map(function(x){return{n:x.n,g:x.g.slice()};});saveLib();renderLibMgr();refreshQP();}}
+
+function switchTab(w){
+  ['single','batch','lib'].forEach(function(t){
+    document.getElementById('panel-'+t).style.display=(t===w)?'block':'none';
+    document.getElementById('tab-'+t).setAttribute('aria-selected',t===w);
+  });
+}
+
+var s_name,s_max,s_min,b_name,b_max,b_min,b_bulk,qpS,qpB,libSearch;
+function bindRefs(){['s_name','s_max','s_min','b_name','b_max','b_min','b_bulk','qpS','qpB','libSearch'].forEach(function(id){window[id]=document.getElementById(id);});}
 
 bindRefs();
+lib=loadLib();
 document.getElementById('brandmark').innerHTML=logoSVG();
 renderGhsPicker('ghsSingle',['flame','excl']);
 renderGhsPicker('ghsBatch',['flame','excl']);
+renderQP('single');renderQP('batch');renderLibMgr();
 renderSingle();renderBatch();
-</script>
-</body>
-</html>
+</script>\n</body>\n</html>
