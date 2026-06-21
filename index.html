@@ -43,7 +43,9 @@ textarea.bulk-in{width:100%;min-height:76px;font:inherit;font-size:13.5px;paddin
 textarea.bulk-in:focus{outline:none;border-color:var(--ink)}
 .list-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
 .count-pill{background:var(--ink);color:#fff;font-size:12px;font-weight:800;padding:3px 11px;border-radius:999px}
-.row-card{display:flex;align-items:center;gap:12px;border:1.4px solid var(--line);border-radius:8px;padding:9px;margin-bottom:10px;background:#fff}
+.row-card{display:flex;align-items:center;gap:12px;border:1.4px solid var(--line);border-radius:8px;padding:9px;margin-bottom:10px;background:#fff;cursor:pointer;transition:.12s}
+.row-card:hover{border-color:var(--ink)}
+.row-card.editing{border-color:var(--ink);box-shadow:0 0 0 2px rgba(22,20,15,.14);background:var(--soft)}
 .row-thumb{flex:0 0 250px;border-radius:4px;overflow:hidden;border:1px solid var(--line)}.row-thumb svg{width:100%;height:auto;display:block}
 .row-meta{flex:1;min-width:0}.row-meta .nm{font-weight:800;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .row-meta .dt{font-size:12px;color:var(--muted);margin-top:3px}
@@ -143,7 +145,7 @@ footer.foot{margin-top:34px;text-align:center;color:var(--muted);font-size:11.5p
           </div>
         </div>
         <div class="field"><label>GHS 危害圖示</label><div class="ghs-pick" id="ghsBatch"></div></div>
-        <div class="actions"><button class="btn primary" onclick="addBatchRow()">＋ 新增到清單</button></div>
+        <div class="actions"><button class="btn primary" id="batchAddBtn" onclick="addBatchRow()">＋ 新增到清單</button><button class="btn ghost" id="batchCancelBtn" onclick="cancelEdit()" style="display:none">取消編輯</button></div>
         <div style="margin-top:18px">
           <div class="field" style="margin-bottom:8px"><label for="b_bulk">批次貼上（一行一筆，格式：名稱，最大量，最小量）</label>
             <textarea class="bulk-in" id="b_bulk" placeholder="克菌寧殺菌液 2%，20，5&#10;75% 酒精，12，3"></textarea></div>
@@ -272,24 +274,35 @@ function doPrint(list){if(!list.length){alert('清單沒有資料');return;}var 
 function printOne(fill){var d=readSingle();doPrint(fill?[d,d,d,d]:[d]);}
 
 var rows=[];
+var editIndex=-1;
 function readBatchForm(){return{name:b_name.value.trim(),max:b_max.value.trim(),min:b_min.value.trim(),ghs:getGhs('ghsBatch')};}
-function addBatchRow(){var d=readBatchForm();if(!d.name){alert('請先輸入水劑名稱');return;}rows.push(d);b_name.value='';b_max.value='';b_min.value='';b_name.focus();renderBatch();}
+function addBatchRow(){var d=readBatchForm();if(!d.name){alert('請先輸入水劑名稱');return;}
+  if(editIndex>=0){rows[editIndex]=d;editIndex=-1;exitEditUI();}else{rows.push(d);}
+  b_name.value='';b_max.value='';b_min.value='';setGhsChecks('ghsBatch',[]);b_name.focus();renderBatch();}
+function editRow(i){var d=rows[i];if(!d)return;editIndex=i;
+  b_name.value=d.name;b_max.value=d.max;b_min.value=d.min;setGhsChecks('ghsBatch',d.ghs||[]);
+  document.getElementById('batchAddBtn').textContent='儲存修改';
+  document.getElementById('batchCancelBtn').style.display='';
+  renderBatch();
+  try{document.getElementById('panel-batch').scrollIntoView({behavior:'smooth',block:'start'});b_name.focus();}catch(e){}}
+function exitEditUI(){var a=document.getElementById('batchAddBtn');if(a)a.textContent='＋ 新增到清單';var c=document.getElementById('batchCancelBtn');if(c)c.style.display='none';}
+function cancelEdit(){editIndex=-1;b_name.value='';b_max.value='';b_min.value='';setGhsChecks('ghsBatch',[]);exitEditUI();renderBatch();}
 function bulkImport(){var L=b_bulk.value.split(/\n/),base=readBatchForm(),n=0;
   L.forEach(function(x){x=x.trim();if(!x)return;var p=x.split(/[,，\t]/);var nm=(p[0]||'').trim();if(!nm)return;
     rows.push({name:nm,max:(p[1]||'').trim(),min:(p[2]||'').trim(),ghs:base.ghs.slice()});n++;});
   if(!n){alert('沒有可匯入的資料');return;}b_bulk.value='';renderBatch();}
 function pushToBatch(){var d=readSingle();if(!d.name){alert('請先輸入水劑名稱');return;}rows.push(d);renderBatch();alert('已加入批次清單（目前 '+rows.length+' 筆）');}
-function delRow(i){rows.splice(i,1);renderBatch();}
+function delRow(i){rows.splice(i,1);if(editIndex===i){editIndex=-1;exitEditUI();b_name.value='';b_max.value='';b_min.value='';setGhsChecks('ghsBatch',[]);}else if(editIndex>i){editIndex--;}renderBatch();}
 function clearBatch(){if(rows.length&&confirm('確定清空清單？')){rows=[];renderBatch();}}
 function renderBatch(){
   document.getElementById('bCount').textContent=rows.length;
   var list=document.getElementById('batchList');
   if(!rows.length){list.innerHTML='<div class="empty">清單目前是空的。<br>用上方表單或品項快捷新增，也可「批次貼上」匯入。</div>';return;}
   list.innerHTML=rows.map(function(d,i){
-    return '<div class="row-card"><div class="row-thumb">'+buildLabel(d)+'</div>'+
+    return '<div class="row-card'+(i===editIndex?' editing':'')+'" onclick="editRow('+i+')"><div class="row-thumb">'+buildLabel(d)+'</div>'+
       '<div class="row-meta"><div class="nm">'+esc(d.name)+'</div>'+
-      '<div class="dt">最大量 '+esc(d.max||'—')+'／最小量 '+esc(d.min||'—')+'　·　到期日期留空手寫</div></div>'+
-      '<button class="row-del" title="刪除" onclick="delRow('+i+')">×</button></div>';
+      '<div class="dt">最大量 '+esc(d.max||'—')+'／最小量 '+esc(d.min||'—')+'　·　點此可修改</div></div>'+
+      '<button class="row-del" title="刪除" onclick="event.stopPropagation();delRow('+i+')">×</button></div>';
   }).join('');
 }
 function printBatch(){doPrint(rows);}
