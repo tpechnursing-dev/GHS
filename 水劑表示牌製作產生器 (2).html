@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>水劑表示牌製作產生器｜仁愛院區</title>
+<style>
+:root{--bg:#f3f3ef;--panel:#fff;--ink:#16140f;--muted:#8f8f86;--line:#e3e3dc;--soft:#f7f7f3;--red:#d5202a;}
+*{box-sizing:border-box}html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei","Heiti TC",sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1160px;margin:0 auto;padding:26px 20px 64px}
+header.top{display:flex;align-items:center;gap:14px;padding-bottom:18px;border-bottom:1.6px solid var(--ink);margin-bottom:22px}
+.brandmark{width:42px;height:42px;flex:0 0 auto}.brandmark svg{display:block;width:100%;height:100%}
+.eyebrow{font-size:10.5px;color:var(--muted);letter-spacing:4px;font-weight:600;margin-bottom:3px}
+h1{font-size:21px;margin:0;letter-spacing:2px;font-weight:800}
+.tabs{display:flex;margin-bottom:22px;border:1.4px solid var(--ink);border-radius:8px;width:max-content;overflow:hidden}
+.tab{appearance:none;border:none;background:#fff;color:var(--ink);font:inherit;font-weight:700;font-size:14px;padding:9px 26px;cursor:pointer;transition:.12s}
+.tab+.tab{border-left:1.4px solid var(--ink)}
+.tab[aria-selected="true"]{background:var(--ink);color:#fff}
+.tab:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.grid{display:grid;grid-template-columns:370px 1fr;gap:24px;align-items:start}
+@media(max-width:880px){.grid{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1.4px solid var(--line);border-radius:10px;padding:20px}
+.card h2{font-size:11px;letter-spacing:3px;color:var(--muted);margin:0 0 16px;font-weight:700;text-transform:uppercase}
+.field{margin-bottom:15px}
+.field>label{display:block;font-size:12px;font-weight:700;margin-bottom:6px;letter-spacing:1px}
+input[type=text]{width:100%;font:inherit;font-size:15px;padding:10px 12px;border:1.4px solid var(--line);border-radius:7px;background:#fff;color:var(--ink)}
+input:focus{outline:none;border-color:var(--ink)}
+.twocol{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sublbl{font-size:11px;color:var(--muted);margin-bottom:4px;font-weight:600;letter-spacing:1px}
+.note{font-size:11.5px;color:var(--muted);margin-top:-4px;margin-bottom:15px;line-height:1.5}
+.ghs-pick{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.ghs-opt{position:relative;display:flex;flex-direction:column;align-items:center;gap:5px;border:1.4px solid var(--line);border-radius:8px;padding:9px 4px 7px;cursor:pointer;background:#fff;transition:.12s}
+.ghs-opt svg{width:40px;height:40px}.ghs-opt span{font-size:11px;color:var(--muted);line-height:1.15;text-align:center}
+.ghs-opt.on{border-color:var(--ink);background:var(--soft)}
+.ghs-opt input{position:absolute;opacity:0;width:0;height:0}
+.actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:6px}
+.btn{appearance:none;border:1.4px solid var(--ink);font:inherit;font-weight:700;font-size:14px;padding:11px 16px;border-radius:7px;cursor:pointer;transition:.12s}
+.btn.primary{background:var(--ink);color:#fff}.btn.primary:hover{background:#000}
+.btn.ghost{background:#fff;color:var(--ink)}.btn.ghost:hover{background:var(--soft)}
+.btn.danger{background:#fff;color:var(--red);border-color:#eccac8}
+.btn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.stage-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.stage-head .tip{font-size:11.5px;color:var(--muted);letter-spacing:1px}
+.pv-stage{background:#e9e9e3;border:1.4px solid var(--line);border-radius:10px;padding:22px}
+.label-wrap{box-shadow:0 10px 30px -18px rgba(0,0,0,.4)}.label-wrap svg{width:100%;height:auto;display:block}
+textarea.bulk-in{width:100%;min-height:76px;font:inherit;font-size:13.5px;padding:10px 12px;border:1.4px solid var(--line);border-radius:7px;background:#fff;resize:vertical;color:var(--ink)}
+textarea.bulk-in:focus{outline:none;border-color:var(--ink)}
+.list-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.count-pill{background:var(--ink);color:#fff;font-size:12px;font-weight:800;padding:3px 11px;border-radius:999px}
+.row-card{display:flex;align-items:center;gap:12px;border:1.4px solid var(--line);border-radius:8px;padding:9px;margin-bottom:10px;background:#fff}
+.row-thumb{flex:0 0 250px;border-radius:4px;overflow:hidden;border:1px solid var(--line)}.row-thumb svg{width:100%;height:auto;display:block}
+.row-meta{flex:1;min-width:0}.row-meta .nm{font-weight:800;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row-meta .dt{font-size:12px;color:var(--muted);margin-top:3px}
+.row-del{flex:0 0 auto;border:1.4px solid #eccac8;background:#fff;color:var(--red);border-radius:7px;width:34px;height:34px;cursor:pointer;font-size:18px}
+.empty{color:var(--muted);font-size:13px;text-align:center;padding:28px 10px;border:1.4px dashed var(--line);border-radius:8px;background:var(--soft)}
+footer.foot{margin-top:34px;text-align:center;color:var(--muted);font-size:11.5px;letter-spacing:2px}
+#printRoot{position:absolute;left:0;top:0;width:100%}
+@media screen{#printRoot{display:none}}
+.print-page{display:flex;flex-direction:column;gap:6mm;align-items:center;page-break-after:always}
+.print-page:last-child{page-break-after:auto}
+.plabel{width:194mm}.plabel svg{width:194mm;height:auto;display:block}
+@media print{body{background:#fff}body>*:not(#printRoot){display:none!important}#printRoot{display:block}@page{size:A4 portrait;margin:9mm}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span class="brandmark" id="brandmark"></span>
+    <div><div class="eyebrow">藥劑安全標示　／　HAZARDOUS MATERIAL</div><h1>水劑表示牌製作產生器</h1></div>
+  </header>
+
+  <div class="tabs" role="tablist">
+    <button class="tab" id="tab-single" role="tab" aria-selected="true" onclick="switchTab('single')">單張製作</button>
+    <button class="tab" id="tab-batch" role="tab" aria-selected="false" onclick="switchTab('batch')">批次製作</button>
+  </div>
+
+  <section id="panel-single" class="grid">
+    <div class="card">
+      <h2>填寫內容 — 單張</h2>
+      <div class="field"><label for="s_name">水劑名稱</label><input type="text" id="s_name" value="克菌寧殺菌液 2%" oninput="renderSingle()"></div>
+      <div class="field"><label>庫存設定量（固定列印）</label>
+        <div class="twocol">
+          <div><div class="sublbl">最大量 MAX</div><input type="text" id="s_max" value="20 瓶" oninput="renderSingle()"></div>
+          <div><div class="sublbl">最小量 MIN</div><input type="text" id="s_min" value="5 瓶" oninput="renderSingle()"></div>
+        </div>
+      </div>
+      <div class="note">到期日期不印在表上，採數字方格留白——護貝後以白板筆／油性筆填寫，可重複擦寫換新。</div>
+      <div class="field"><label>危害分類標誌</label><div class="ghs-pick" id="ghsSingle"></div></div>
+      <div class="actions">
+        <button class="btn primary" onclick="printOne(false)">列印這張</button>
+        <button class="btn ghost" onclick="printOne(true)">列印整頁 4 張</button>
+        <button class="btn ghost" onclick="pushToBatch()">＋ 加入批次</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="stage-head"><h2 style="margin:0">即時預覽</h2><span class="tip">A4 原寸列印・每頁 4 張</span></div>
+      <div class="pv-stage"><div class="label-wrap" id="pvLabel"></div></div>
+    </div>
+  </section>
+
+  <section id="panel-batch" class="grid" style="display:none">
+    <div class="card">
+      <h2>新增到清單 — 批次</h2>
+      <div class="field"><label for="b_name">水劑名稱</label><input type="text" id="b_name" placeholder="例：75% 酒精性乾洗手液"></div>
+      <div class="field"><label>庫存設定量</label>
+        <div class="twocol">
+          <div><div class="sublbl">最大量 MAX</div><input type="text" id="b_max" placeholder="20 瓶"></div>
+          <div><div class="sublbl">最小量 MIN</div><input type="text" id="b_min" placeholder="5 瓶"></div>
+        </div>
+      </div>
+      <div class="field"><label>危害分類標誌（套用此筆與批次貼上）</label><div class="ghs-pick" id="ghsBatch"></div></div>
+      <div class="actions"><button class="btn primary" onclick="addBatchRow()">＋ 新增到清單</button></div>
+      <div style="margin-top:18px">
+        <div class="field" style="margin-bottom:8px"><label for="b_bulk">批次貼上（一行一筆，格式：名稱，最大量，最小量）</label>
+          <textarea class="bulk-in" id="b_bulk" placeholder="克菌寧殺菌液 2%，20，5&#10;75% 酒精，12，3&#10;次氯酸鈉稀釋液，8，2"></textarea></div>
+        <button class="btn ghost" onclick="bulkImport()">批次匯入</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="list-head"><h2 style="margin:0">列印清單 <span class="count-pill" id="bCount">0</span></h2>
+        <div style="display:flex;gap:8px"><button class="btn primary" onclick="printBatch()">列印全部</button><button class="btn danger" onclick="clearBatch()">清空</button></div></div>
+      <div id="batchList"></div>
+    </div>
+  </section>
+
+  <footer class="foot">© 鄭瑞賢 製作・版權所有</footer>
+</div>
+<div id="printRoot"></div>
+
+<script>
+var INK="#16140f",GRAY="#8f8f86",RED="#d5202a";
+var LOGO_INNER=
+ '<g fill="#0a6135"><rect x="18" y="6" width="29" height="121" rx="14.5"/>'+
+ '<rect x="83" y="6" width="29" height="121" rx="14.5"/><rect x="18" y="55" width="94" height="21"/></g>'+
+ '<path fill="#d51f29" d="M3,69 C1,43 20,15 52,8 C84,2 108,2 121,4 C107,6 80,11 55,18 C27,26 13,47 12,66 C12,71 7,73 3,69 Z"/>'+
+ '<path fill="#143a82" d="M123,57 C132,80 112,100 78,106 C58,109 42,108 29,104 C42,104 58,103 78,99 C110,90 122,70 123,57 Z"/>'+
+ '<path fill="#f6d200" d="M24,80 C40,110 80,124 110,114 C120,110 126,105 128,96 C122,104 100,114 74,110 C52,106 38,96 28,84 C26,82 24,81 24,80 Z"/>';
+function logoSVG(){return '<svg viewBox="0 0 131 133" xmlns="http://www.w3.org/2000/svg">'+LOGO_INNER+'</svg>';}
+
+/* 標準 GHS 危害圖示（紅框白底黑符號・公開標準符號） */
+var GHS_FRAME='<rect x="17" y="17" width="66" height="66" rx="7" transform="rotate(45 50 50)" fill="#ffffff" stroke="#e60012" stroke-width="8"/>';
+var GHS={
+ flame:{zh:'易燃物',sym:'<path fill="#1a1a1a" d="M50 27 C 55 36 63 39 62 49 C 61 54 58 57 54 58 C 57 53 54 49 51 50 C 54 56 50 60 51 66 C 51 69 54 71 57 71 C 46 71 39 63 41 53 C 42 47 46 44 46 38 C 49 42 52 43 53 41 C 49 36 48 31 50 27 Z"/><path fill="#1a1a1a" d="M41 45 C 38 50 38 56 42 61 C 36 58 33 50 37 44 C 38 46 40 46 41 45 Z"/><rect x="34" y="72" width="32" height="4.5" rx="1.5" fill="#1a1a1a"/>'},
+ excl:{zh:'刺激／警告',sym:'<path fill="#1a1a1a" d="M46 32 h8 l-2 24 h-4 z"/><circle cx="50" cy="63" r="4.2" fill="#1a1a1a"/>'},
+ oxid:{zh:'氧化劑',sym:'<path fill="none" stroke="#1a1a1a" stroke-width="6" d="M50 54 m -13 7 a 13 13 0 1 0 26 0 a 13 13 0 1 0 -26 0"/><path fill="#1a1a1a" d="M49 26 C 54 35 62 38 61 48 C 60 53 57 55 53 56 C 56 51 53 48 50 49 C 53 54 49 57 50 61 C 44 59 39 53 42 46 C 43 48 46 48 47 47 C 43 41 45 33 49 26 Z"/><rect x="33" y="76" width="34" height="4.5" rx="1.5" fill="#1a1a1a"/>'},
+ corr:{zh:'腐蝕物',sym:'<g fill="none" stroke="#1a1a1a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M30 32 l8 14"/><path d="M30 32 l-3 2 l8 14 l3 -2 z" fill="#1a1a1a" stroke="none"/><path d="M70 32 l-8 14"/><path d="M70 32 l3 2 l-8 14 l-3 -2 z" fill="#1a1a1a" stroke="none"/></g><g stroke="#1a1a1a" stroke-width="1.8" fill="none"><path d="M34 50 q1 4 -1 7"/><path d="M37 50 q1 4 -1 7"/><path d="M60 50 q1 4 -1 7"/><path d="M63 50 q1 4 -1 7"/></g><rect x="28" y="62" width="20" height="4" fill="#1a1a1a"/><path d="M34 62 l3 5 l3 -5 z" fill="#fff" stroke="#1a1a1a" stroke-width="1.5"/><path d="M55 64 q4 -3 9 -2 q5 1 8 4 l-1 3 q-3 -2 -7 -2 l-2 2 l-2 -2 l-2 1 l-1 -2 l-2 1 z" fill="#1a1a1a"/>'},
+ skull:{zh:'急性毒性',sym:'<g stroke="#1a1a1a" stroke-width="5" stroke-linecap="round"><line x1="36" y1="58" x2="64" y2="78"/><line x1="64" y1="58" x2="36" y2="78"/></g><circle cx="36" cy="58" r="3.2" fill="#1a1a1a"/><circle cx="64" cy="58" r="3.2" fill="#1a1a1a"/><circle cx="36" cy="78" r="3.2" fill="#1a1a1a"/><circle cx="64" cy="78" r="3.2" fill="#1a1a1a"/><path d="M50 30 c -11 0 -18 7 -18 17 c 0 6 3 10 6 12 c 1 1 1 3 1 4 h22 c 0 -1 0 -3 1 -4 c 3 -2 6 -6 6 -12 c 0 -10 -7 -17 -18 -17 z" fill="#fff" stroke="#1a1a1a" stroke-width="2.6"/><ellipse cx="43" cy="48" rx="4.5" ry="5" fill="#1a1a1a"/><ellipse cx="57" cy="48" rx="4.5" ry="5" fill="#1a1a1a"/><path d="M50 53 l -3 6 h6 z" fill="#1a1a1a"/>'},
+ gas:{zh:'壓縮氣體',sym:'<g transform="rotate(-32 50 52)"><rect x="44" y="30" width="12" height="40" rx="6" fill="#1a1a1a"/><rect x="47.5" y="24" width="5" height="8" rx="1.5" fill="#1a1a1a"/></g>'},
+ health:{zh:'健康危害',sym:'<ellipse cx="50" cy="38" rx="8.5" ry="9.5" fill="#1a1a1a"/><path d="M31 74 C 31 60 39 52 50 52 C 61 52 69 60 69 74 Z" fill="#1a1a1a"/><path d="M50 53 l2.4 7.5 7.8 0 -6.3 4.6 2.4 7.5 -6.3 -4.6 -6.3 4.6 2.4 -7.5 -6.3 -4.6 7.8 0 z" fill="#fff"/>'},
+ expl:{zh:'爆炸物',sym:'<circle cx="49" cy="54" r="7" fill="#1a1a1a"/><path fill="#1a1a1a" d="M54.1 47.3 L68.7 40.2 L57.0 51.5 Z"/><path fill="#1a1a1a" d="M49.5 45.7 L58.6 27.7 L54.0 47.3 Z"/><path fill="#1a1a1a" d="M44.8 46.8 L43.3 32.7 L49.1 45.7 Z"/><path fill="#1a1a1a" d="M42.4 48.8 L34.1 32.7 L46.4 46.1 Z"/><path fill="#1a1a1a" d="M41.1 51.7 L31.7 44.0 L43.1 48.3 Z"/><path fill="#1a1a1a" d="M57.3 53.0 L72.6 58.2 L56.5 57.8 Z"/><path fill="#1a1a1a" d="M56.7 57.0 L65.4 65.5 L54.4 60.2 Z"/><path fill="#1a1a1a" d="M54.9 59.8 L60.5 73.9 L51.1 62.0 Z"/><path fill="#1a1a1a" d="M47.4 62.1 L40.5 72.1 L43.8 60.4 Z"/><path fill="#1a1a1a" d="M42.1 58.4 L31.1 60.5 L40.9 55.0 Z"/><circle cx="36" cy="68" r="2.2" fill="#1a1a1a"/><circle cx="64" cy="40" r="1.8" fill="#1a1a1a"/>'},
+ env:{zh:'環境危險',sym:'<path fill="#1a1a1a" d="M28 70 q6 -3 12 0 q6 3 12 0 q6 -3 12 0 q6 3 10 0 l0 6 -56 0 z"/><g stroke="#1a1a1a" stroke-width="2.6" fill="none" stroke-linecap="round"><path d="M39 70 V38"/><path d="M39 50 l-8 -8"/><path d="M39 46 l8 -9"/><path d="M39 55 l7 -7"/><path d="M39 43 l-7 -6"/><path d="M39 39 l-5 -7"/><path d="M39 39 l6 -6"/></g><path fill="#1a1a1a" d="M50 60 q9 -8 19 -5 q-3 4 -3 6 q0 3 3 6 q-10 3 -19 -5 z"/><path d="M68 55 l6 -4 -1 8 z" fill="#1a1a1a"/><circle cx="55" cy="60" r="1.6" fill="#fff"/><line x1="29" y1="61" x2="71" y2="61" stroke="#1a1a1a" stroke-width="2"/>'}
+};
+var GHS_ORDER=['flame','excl','oxid','corr','skull','gas','health','expl','env'];
+function ghsInner(k){return GHS_FRAME+GHS[k].sym;}
+function ghsIcon(k){return '<svg viewBox="0 0 100 100" width="40" height="40" xmlns="http://www.w3.org/2000/svg">'+ghsInner(k)+'</svg>';}
+
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function cjkW(s){var w=0;for(var i=0;i<s.length;i++)w+=/[\u0000-\u00ff]/.test(s[i])?0.56:1;return w;}
+function fitFont(s,b,base,mn){var w=cjkW(s)||1;return Math.max(mn,Math.min(base,b/w));}
+
+var GF="'Noto Sans TC','Microsoft JhengHei','Heiti TC',sans-serif";
+function box(x){return '<rect x="'+x+'" y="196" width="40" height="46" rx="3" fill="#ffffff" stroke="'+RED+'" stroke-width="2.2"/>';}
+function buildLabel(d){
+  var name=d.name||'　', nameFs=fitFont(name,860,38,18);
+  var maxFs=fitFont(d.max||' ',132,36,16), minFs=fitFont(d.min||' ',132,36,16);
+  var s='<svg viewBox="0 0 1000 330" xmlns="http://www.w3.org/2000/svg" font-family="'+GF+'">';
+  s+='<rect width="1000" height="330" fill="#ffffff"/>';
+  s+='<rect x="9" y="9" width="982" height="312" rx="2" fill="none" stroke="'+INK+'" stroke-width="2.5"/>';
+  /* header */
+  s+='<text x="46" y="54" font-size="22" font-weight="800" fill="'+INK+'" letter-spacing="7">藥劑安全標示</text>';
+  s+='<text x="48" y="76" font-size="11" font-weight="500" fill="'+GRAY+'" letter-spacing="3">HAZARDOUS MATERIAL　／　取扱注意</text>';
+  s+='<svg x="901" y="32" width="46" height="47" viewBox="0 0 131 133">'+LOGO_INNER+'</svg>';
+  s+='<text x="884" y="52" text-anchor="end" font-size="13" font-weight="600" fill="'+INK+'" letter-spacing="1">臺北市立聯合醫院</text>';
+  s+='<text x="884" y="75" text-anchor="end" font-size="17" font-weight="800" fill="'+INK+'" letter-spacing="2">仁愛院區</text>';
+  s+='<line x1="46" y1="92" x2="954" y2="92" stroke="'+INK+'" stroke-width="1.6"/>';
+  /* name */
+  s+='<text x="46" y="116" font-size="11" font-weight="600" fill="'+GRAY+'" letter-spacing="4">品名　NAME</text>';
+  s+='<text x="46" y="152" font-size="'+nameFs+'" font-weight="800" fill="'+INK+'" letter-spacing="1">'+esc(name)+'</text>';
+  /* expiry date — RED WARNING block (blank digit boxes, write after lamination) */
+  s+='<rect x="38" y="161" width="582" height="94" rx="6" fill="#fdf3f2" stroke="'+RED+'" stroke-width="2.2"/>';
+  s+='<path d="M62 169 l12 20 h-24 z" fill="'+RED+'"/><rect x="60.6" y="176" width="2.8" height="7" fill="#fff"/><circle cx="62" cy="186" r="1.6" fill="#fff"/>';
+  s+='<text x="82" y="184" font-size="14" font-weight="800" fill="'+RED+'" letter-spacing="2">到期日期　EXPIRY</text>';
+  s+='<text x="606" y="184" text-anchor="end" font-size="12" font-weight="800" fill="'+RED+'" letter-spacing="1">過期禁用</text>';
+  s+='<text x="54" y="227" font-size="20" font-weight="700" fill="'+INK+'">民國</text>';
+  var bx=112,i;
+  for(i=0;i<3;i++){s+=box(bx);bx+=45;}
+  s+='<text x="'+(bx+1)+'" y="227" font-size="20" font-weight="700" fill="'+INK+'">年</text>';bx+=29;
+  for(i=0;i<2;i++){s+=box(bx);bx+=45;}
+  s+='<text x="'+(bx+1)+'" y="227" font-size="20" font-weight="700" fill="'+INK+'">月</text>';bx+=29;
+  for(i=0;i<2;i++){s+=box(bx);bx+=45;}
+  s+='<text x="'+(bx+1)+'" y="227" font-size="20" font-weight="700" fill="'+INK+'">日</text>';
+  /* right: 最大量 / 最小量 (printed) */
+  s+='<line x1="652" y1="170" x2="652" y2="250" stroke="#dcdcd4" stroke-width="1.6"/>';
+  s+='<line x1="806" y1="178" x2="806" y2="244" stroke="#e8e8e1" stroke-width="1.4"/>';
+  s+='<text x="676" y="180" font-size="11" font-weight="600" fill="'+GRAY+'" letter-spacing="2">最大量　MAX</text>';
+  s+='<text x="676" y="232" font-size="'+maxFs+'" font-weight="800" fill="'+INK+'">'+esc(d.max||'')+'</text>';
+  s+='<text x="830" y="180" font-size="11" font-weight="600" fill="'+GRAY+'" letter-spacing="2">最小量　MIN</text>';
+  s+='<text x="830" y="232" font-size="'+minFs+'" font-weight="800" fill="'+INK+'">'+esc(d.min||'')+'</text>';
+  /* bottom */
+  s+='<line x1="46" y1="270" x2="954" y2="270" stroke="'+INK+'" stroke-width="1.6"/>';
+  var gx=46;
+  (d.ghs||[]).forEach(function(k){ if(GHS[k]){ s+='<svg x="'+gx+'" y="272" width="48" height="48" viewBox="0 0 100 100">'+ghsInner(k)+'</svg>'; gx+=54; } });
+  s+='<text x="954" y="304" text-anchor="end" font-size="20" font-weight="800" fill="'+RED+'" letter-spacing="6">嚴禁煙火</text>';
+  s+='</svg>';
+  return s;
+}
+
+function renderGhsPicker(id,sel){
+  var c=document.getElementById(id);c.innerHTML='';
+  GHS_ORDER.forEach(function(k){
+    var on=sel.indexOf(k)>=0,lab=document.createElement('label');
+    lab.className='ghs-opt'+(on?' on':'');
+    lab.innerHTML=ghsIcon(k)+'<span>'+GHS[k].zh+'</span><input type="checkbox" value="'+k+'" '+(on?'checked':'')+'>';
+    var inp=lab.querySelector('input');
+    inp.addEventListener('change',function(){lab.classList.toggle('on',inp.checked);if(id==='ghsSingle')renderSingle();});
+    c.appendChild(lab);
+  });
+}
+function getGhs(id){var o=[];document.querySelectorAll('#'+id+' input:checked').forEach(function(i){o.push(i.value);});return o;}
+
+function readSingle(){return{name:s_name.value.trim(),max:s_max.value.trim(),min:s_min.value.trim(),ghs:getGhs('ghsSingle')};}
+function renderSingle(){document.getElementById('pvLabel').innerHTML=buildLabel(readSingle());}
+
+function chunk(a,n){var o=[];for(var i=0;i<a.length;i+=n)o.push(a.slice(i,i+n));return o;}
+function doPrint(list){if(!list.length){alert('清單沒有資料');return;}var html='';
+  chunk(list,4).forEach(function(pg){html+='<div class="print-page">';pg.forEach(function(d){html+='<div class="plabel">'+buildLabel(d)+'</div>';});html+='</div>';});
+  document.getElementById('printRoot').innerHTML=html;window.print();}
+function printOne(fill){var d=readSingle();doPrint(fill?[d,d,d,d]:[d]);}
+
+var rows=[];
+function readBatchForm(){return{name:b_name.value.trim(),max:b_max.value.trim(),min:b_min.value.trim(),ghs:getGhs('ghsBatch')};}
+function addBatchRow(){var d=readBatchForm();if(!d.name){alert('請先輸入水劑名稱');return;}rows.push(d);b_name.value='';b_max.value='';b_min.value='';b_name.focus();renderBatch();}
+function bulkImport(){var L=b_bulk.value.split(/\n/),base=readBatchForm(),n=0;
+  L.forEach(function(x){x=x.trim();if(!x)return;var p=x.split(/[,，\t]/);var nm=(p[0]||'').trim();if(!nm)return;
+    rows.push({name:nm,max:(p[1]||'').trim(),min:(p[2]||'').trim(),ghs:base.ghs.slice()});n++;});
+  if(!n){alert('沒有可匯入的資料');return;}b_bulk.value='';renderBatch();}
+function pushToBatch(){var d=readSingle();if(!d.name){alert('請先輸入水劑名稱');return;}rows.push(d);renderBatch();alert('已加入批次清單（目前 '+rows.length+' 筆）');}
+function delRow(i){rows.splice(i,1);renderBatch();}
+function clearBatch(){if(rows.length&&confirm('確定清空清單？')){rows=[];renderBatch();}}
+function renderBatch(){
+  document.getElementById('bCount').textContent=rows.length;
+  var list=document.getElementById('batchList');
+  if(!rows.length){list.innerHTML='<div class="empty">清單目前是空的。<br>用上方表單新增，或「批次貼上」一次匯入多筆。</div>';return;}
+  list.innerHTML=rows.map(function(d,i){
+    return '<div class="row-card"><div class="row-thumb">'+buildLabel(d)+'</div>'+
+      '<div class="row-meta"><div class="nm">'+esc(d.name)+'</div>'+
+      '<div class="dt">最大量 '+esc(d.max||'—')+'／最小量 '+esc(d.min||'—')+'　·　到期日期留空手寫</div></div>'+
+      '<button class="row-del" title="刪除" onclick="delRow('+i+')">×</button></div>';
+  }).join('');
+}
+function printBatch(){doPrint(rows);}
+
+function switchTab(w){var s=w==='single';
+  document.getElementById('panel-single').style.display=s?'grid':'none';
+  document.getElementById('panel-batch').style.display=s?'none':'grid';
+  document.getElementById('tab-single').setAttribute('aria-selected',s);
+  document.getElementById('tab-batch').setAttribute('aria-selected',!s);}
+
+var s_name,s_max,s_min,b_name,b_max,b_min,b_bulk;
+function bindRefs(){['s_name','s_max','s_min','b_name','b_max','b_min','b_bulk'].forEach(function(id){window[id]=document.getElementById(id);});}
+
+bindRefs();
+document.getElementById('brandmark').innerHTML=logoSVG();
+renderGhsPicker('ghsSingle',['flame','excl']);
+renderGhsPicker('ghsBatch',['flame','excl']);
+renderSingle();renderBatch();
+</script>
+</body>
+</html>
