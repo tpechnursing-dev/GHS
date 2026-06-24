@@ -1,1153 +1,452 @@
-<!DOCTYPE html>
-<html lang="zh-Hant">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>冷藏藥品冰箱管理標準作業 E化稽核系統</title>
-<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
-<style>
-  :root{
-    --green:#0f7a4d;        /* 臺北市立聯合醫院 H 綠 */
-    --green-d:#0a5c39;
-    --green-l:#e7f4ee;
-    --ink:#16302a;
-    --slate:#1e3a44;
-    --line:#cdd8d3;
-    --line-d:#9fb0aa;
-    --paper:#f4f6f5;
-    --red:#c8201c;
-    --red-l:#fdeceb;
-    --amber:#b8860b;
-    --gray:#6b7873;
-    --na:#8a96a3;
-    --shadow:0 1px 3px rgba(20,48,42,.08),0 6px 24px rgba(20,48,42,.06);
-  }
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{
-    font-family:"標楷體","DFKai-SB","BiauKai","Noto Serif TC",serif;
-    background:var(--paper);color:var(--ink);
-    -webkit-font-smoothing:antialiased;line-height:1.5;
-  }
-  button{font-family:inherit;cursor:pointer}
-  input,select,textarea{font-family:inherit}
+<!DOCTYPE html>\n<html lang="zh-Hant">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<title>水劑表示牌製作產生器｜仁愛院區</title>\n<style>
+:root{--bg:#f3f3ef;--panel:#fff;--ink:#16140f;--muted:#8f8f86;--line:#e3e3dc;--soft:#f7f7f3;--red:#d5202a;}
+*{box-sizing:border-box}html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei","Heiti TC",sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1160px;margin:0 auto;padding:26px 20px 64px}
+header.top{display:flex;align-items:center;gap:14px;padding-bottom:18px;border-bottom:1.6px solid var(--ink);margin-bottom:22px}
+.brandmark{width:42px;height:42px;flex:0 0 auto}.brandmark svg{display:block;width:100%;height:100%}
+.eyebrow{font-size:10.5px;color:var(--muted);letter-spacing:4px;font-weight:600;margin-bottom:3px}
+h1{font-size:21px;margin:0;letter-spacing:2px;font-weight:800}
+.tabs{display:flex;margin-bottom:22px;border:1.4px solid var(--ink);border-radius:8px;width:max-content;overflow:hidden}
+.tab{appearance:none;border:none;background:#fff;color:var(--ink);font:inherit;font-weight:700;font-size:14px;padding:9px 24px;cursor:pointer;transition:.12s}
+.tab+.tab{border-left:1.4px solid var(--ink)}
+.tab[aria-selected="true"]{background:var(--ink);color:#fff}
+.tab:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.grid{display:grid;grid-template-columns:370px 1fr;gap:24px;align-items:start}
+@media(max-width:880px){.grid{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1.4px solid var(--line);border-radius:10px;padding:20px}
+.card h2{font-size:11px;letter-spacing:3px;color:var(--muted);margin:0 0 14px;font-weight:700;text-transform:uppercase}
+.field{margin-bottom:15px}
+.field>label{display:block;font-size:12px;font-weight:700;margin-bottom:6px;letter-spacing:1px}
+input[type=text]{width:100%;font:inherit;font-size:15px;padding:10px 12px;border:1.4px solid var(--line);border-radius:7px;background:#fff;color:var(--ink)}
+input:focus{outline:none;border-color:var(--ink)}
+.twocol{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sublbl{font-size:11px;color:var(--muted);margin-bottom:4px;font-weight:600;letter-spacing:1px}
+.note{font-size:11.5px;color:var(--muted);margin-top:-4px;margin-bottom:15px;line-height:1.5}
+.ghs-pick{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.ghs-opt{position:relative;display:flex;flex-direction:column;align-items:center;gap:5px;border:1.4px solid var(--line);border-radius:8px;padding:9px 4px 7px;cursor:pointer;background:#fff;transition:.12s}
+.ghs-opt svg{width:38px;height:38px}.ghs-opt span{font-size:11px;color:var(--muted);line-height:1.15;text-align:center}
+.ghs-opt.on{border-color:var(--ink);background:var(--soft)}
+.ghs-opt input{position:absolute;opacity:0;width:0;height:0}
+.actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:6px}
+.btn{appearance:none;border:1.4px solid var(--ink);font:inherit;font-weight:700;font-size:14px;padding:11px 16px;border-radius:7px;cursor:pointer;transition:.12s}
+.btn.primary{background:var(--ink);color:#fff}.btn.primary:hover{background:#000}
+.btn.ghost{background:#fff;color:var(--ink)}.btn.ghost:hover{background:var(--soft)}
+.btn.sm{padding:8px 13px;font-size:13px}
+.btn.danger{background:#fff;color:var(--red);border-color:#eccac8}
+.btn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.stage-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.stage-head .tip{font-size:11.5px;color:var(--muted);letter-spacing:1px}
+.pv-stage{background:#e9e9e3;border:1.4px solid var(--line);border-radius:10px;padding:22px}
+.label-wrap{box-shadow:0 10px 30px -18px rgba(0,0,0,.4)}.label-wrap svg{width:100%;height:auto;display:block}
+textarea.bulk-in{width:100%;min-height:76px;font:inherit;font-size:13.5px;padding:10px 12px;border:1.4px solid var(--line);border-radius:7px;background:#fff;resize:vertical;color:var(--ink)}
+textarea.bulk-in:focus{outline:none;border-color:var(--ink)}
+.list-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.count-pill{background:var(--ink);color:#fff;font-size:12px;font-weight:800;padding:3px 11px;border-radius:999px}
+.row-card{display:flex;align-items:center;gap:12px;border:1.4px solid var(--line);border-radius:8px;padding:9px;margin-bottom:10px;background:#fff;cursor:pointer;transition:.12s}
+.row-card:hover{border-color:var(--ink)}
+.row-card.editing{border-color:var(--ink);box-shadow:0 0 0 2px rgba(22,20,15,.14);background:var(--soft)}
+.row-thumb{flex:0 0 250px;border-radius:4px;overflow:hidden;border:1px solid var(--line)}.row-thumb svg{width:100%;height:auto;display:block}
+.row-meta{flex:1;min-width:0}.row-meta .nm{font-weight:800;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row-meta .dt{font-size:12px;color:var(--muted);margin-top:3px}
+.row-del{flex:0 0 auto;border:1.4px solid #eccac8;background:#fff;color:var(--red);border-radius:7px;width:34px;height:34px;cursor:pointer;font-size:18px}
+.empty{color:var(--muted);font-size:13px;text-align:center;padding:28px 10px;border:1.4px dashed var(--line);border-radius:8px;background:var(--soft)}
+footer.foot{margin-top:34px;text-align:center;color:var(--muted);font-size:11.5px;letter-spacing:2px}
+/* quick pick */
+.qp-card{margin-bottom:22px}
+.qp-hint{font-size:11.5px;color:var(--muted);margin:0 0 12px;line-height:1.5}
+.qp-search{width:100%;font:inherit;font-size:15px;padding:11px 14px;border:1.4px solid var(--line);border-radius:8px;background:#fff;margin-bottom:12px}
+.qp-search:focus{outline:none;border-color:var(--ink)}
+.qp-list{display:flex;flex-wrap:wrap;gap:8px;max-height:188px;overflow:auto;padding:2px}
+.qp-item{display:inline-flex;align-items:center;gap:8px;border:1.4px solid var(--line);background:#fff;border-radius:8px;padding:7px 11px;cursor:pointer;font:inherit;font-size:13.5px;font-weight:600;color:var(--ink)}
+.qp-item:hover{border-color:var(--ink);background:var(--soft)}
+.qp-ic{display:inline-flex;gap:3px}.qp-ic svg{width:18px;height:18px}
+.qp-nm{white-space:nowrap}
+.qp-empty{color:var(--muted);font-size:13px;padding:14px}
+/* library manager */
+.lib-toolbar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
+.lib-toolbar .qp-search{margin:0;flex:1;min-width:180px}
+.lib-row{display:flex;align-items:center;gap:10px;border:1.4px solid var(--line);border-radius:8px;padding:8px 10px;margin-bottom:8px;background:#fff}
+.lib-name{flex:0 0 240px;font:inherit;font-size:14px;font-weight:700;padding:7px 10px;border:1.4px solid var(--line);border-radius:6px;color:var(--ink)}
+.lib-name:focus{outline:none;border-color:var(--ink)}
+.lib-togs{display:flex;gap:2px;flex:1;flex-wrap:wrap}
+.lib-tog{border:none;background:transparent;padding:1px;cursor:pointer;opacity:.22;border-radius:5px;line-height:0}
+.lib-tog.on{opacity:1;background:#fdecec}
+.lib-tog svg{width:26px;height:26px;display:block}
+@media(max-width:640px){.lib-name{flex-basis:140px}}
+#printRoot{position:absolute;left:0;top:0;width:100%}
+@media screen{#printRoot{display:none}}
+.print-page{display:flex;flex-direction:column;gap:6mm;align-items:center;page-break-after:always}
+.print-page:last-child{page-break-after:auto}
+.plabel{width:194mm}.plabel svg{width:194mm;height:auto;display:block}
+@media print{body{background:#fff}body>*:not(#printRoot){display:none!important}#printRoot{display:block}@page{size:A4 portrait;margin:9mm}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>\n</head>\n<body>\n<div class="wrap">
+  <header class="top">
+    <span class="brandmark" id="brandmark"></span>
+    <div><div class="eyebrow">藥劑安全標示　／　仁愛院區</div><h1>水劑表示牌製作產生器</h1></div>
+  </header>
 
-  /* ---------- App chrome ---------- */
-  .topbar{
-    background:linear-gradient(120deg,var(--green-d),var(--green));
-    color:#fff;padding:14px 22px;display:flex;align-items:center;gap:16px;
-    box-shadow:0 2px 10px rgba(10,92,57,.25);position:sticky;top:0;z-index:50;
-  }
-  .brand-h{
-    width:42px;height:42px;border-radius:9px;background:#fff;color:var(--green-d);
-    display:grid;place-items:center;font-weight:900;font-size:26px;
-    font-family:Arial,sans-serif;flex:none;box-shadow:0 2px 6px rgba(0,0,0,.18);
-  }
-  .brand-txt h1{font-size:18px;letter-spacing:.5px;font-weight:700}
-  .brand-txt p{font-size:12px;opacity:.85;font-family:Arial,"標楷體",serif}
-  .docno{margin-left:auto;font-family:Arial,sans-serif;font-size:12px;
-    background:rgba(255,255,255,.16);padding:5px 12px;border-radius:20px;letter-spacing:1px}
-
-  .tabs{display:flex;gap:4px;background:#fff;padding:0 18px;border-bottom:1px solid var(--line);
-    position:sticky;top:70px;z-index:40;overflow-x:auto}
-  .tab{padding:13px 20px;border:none;background:none;font-size:15px;color:var(--gray);
-    border-bottom:3px solid transparent;white-space:nowrap;font-weight:600;transition:.15s}
-  .tab:hover{color:var(--green-d)}
-  .tab.on{color:var(--green-d);border-bottom-color:var(--green)}
-  .tab .badge{display:inline-block;min-width:18px;height:18px;line-height:18px;font-size:11px;
-    background:var(--red);color:#fff;border-radius:9px;margin-left:6px;font-family:Arial,sans-serif;padding:0 5px}
-
-  .wrap{max-width:1080px;margin:22px auto;padding:0 18px 80px}
-
-  .card{background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);
-    overflow:hidden;margin-bottom:22px}
-  .card-h{padding:14px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;
-    background:linear-gradient(180deg,#fff,#fbfdfc)}
-  .card-h .tag{width:5px;height:20px;background:var(--green);border-radius:3px}
-  .card-h h2{font-size:16px;color:var(--slate)}
-  .card-h .sub{margin-left:auto;font-size:12px;color:var(--gray)}
-  .card-b{padding:20px}
-
-  /* ---------- form ---------- */
-  .grid{display:grid;gap:14px}
-  .g4{grid-template-columns:repeat(4,1fr)}
-  .g3{grid-template-columns:repeat(3,1fr)}
-  .g2{grid-template-columns:repeat(2,1fr)}
-  .fld label{display:block;font-size:13px;color:var(--gray);margin-bottom:5px;font-weight:600}
-  .fld input,.fld select{width:100%;padding:9px 11px;border:1px solid var(--line-d);border-radius:8px;
-    font-size:14px;background:#fff;transition:.15s}
-  .fld input:focus,.fld select:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px var(--green-l)}
-  .roc{display:flex;gap:6px;align-items:center}
-  .roc input{width:70px;text-align:center}
-  .roc .u{font-size:13px;color:var(--gray)}
-
-  .methods{display:flex;flex-wrap:wrap;gap:8px;margin-top:2px}
-  .chk{display:inline-flex;align-items:center;gap:6px;padding:7px 13px;border:1px solid var(--line-d);
-    border-radius:20px;font-size:13px;user-select:none;transition:.15s;background:#fff}
-  .chk:hover{border-color:var(--green)}
-  .chk.on{background:var(--green-l);border-color:var(--green);color:var(--green-d);font-weight:600}
-  .chk input{display:none}
-  .chk .box{width:15px;height:15px;border:1.5px solid var(--line-d);border-radius:4px;display:grid;place-items:center;font-size:11px}
-  .chk.on .box{background:var(--green);border-color:var(--green);color:#fff}
-
-  /* ---------- audit items ---------- */
-  .item{border:1px solid var(--line);border-radius:10px;margin-bottom:10px;overflow:hidden;transition:.15s}
-  .item.bad{border-color:var(--red);box-shadow:0 0 0 3px var(--red-l)}
-  .item-row{display:flex;align-items:flex-start;gap:14px;padding:13px 15px}
-  .item-no{width:26px;height:26px;flex:none;border-radius:7px;background:var(--slate);color:#fff;
-    display:grid;place-items:center;font-size:13px;font-family:Arial,sans-serif;font-weight:700;margin-top:1px}
-  .item-txt{flex:1;font-size:14px;line-height:1.55}
-  .seg{display:flex;flex:none;border:1px solid var(--line-d);border-radius:8px;overflow:hidden}
-  .seg button{padding:8px 13px;border:none;background:#fff;font-size:13px;color:var(--gray);font-weight:600;
-    border-right:1px solid var(--line);transition:.12s}
-  .seg button:last-child{border-right:none}
-  .seg button.s-ok.on{background:var(--green);color:#fff}
-  .seg button.s-bad.on{background:var(--red);color:#fff}
-  .seg button.s-na.on{background:var(--na);color:#fff}
-
-  .defbox{padding:0 15px 15px 55px;border-top:1px dashed var(--red);margin-top:-2px;background:var(--red-l)}
-  .defbox .dh{font-size:13px;color:var(--red);font-weight:700;padding:10px 0 8px;display:flex;align-items:center;gap:6px}
-  .defbox textarea{width:100%;padding:8px 10px;border:1px solid var(--line-d);border-radius:7px;font-size:13px;
-    resize:vertical;min-height:46px;margin-bottom:8px}
-  .defbox textarea:focus{outline:none;border-color:var(--red)}
-  .photos{display:flex;flex-wrap:wrap;gap:10px}
-  .ph{position:relative;width:96px;height:96px;border-radius:8px;overflow:hidden;border:1px solid var(--line-d);background:#fff}
-  .ph img{width:100%;height:100%;object-fit:cover}
-  .ph .del{position:absolute;top:3px;right:3px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,.6);
-    color:#fff;border:none;font-size:13px;display:grid;place-items:center;line-height:1}
-  .addph{width:96px;height:96px;border:2px dashed var(--line-d);border-radius:8px;display:grid;place-items:center;
-    color:var(--gray);font-size:12px;background:#fff;text-align:center;transition:.15s}
-  .addph:hover{border-color:var(--red);color:var(--red)}
-
-  /* ---------- result strip ---------- */
-  .result{display:flex;align-items:center;gap:20px;padding:16px 20px;border-radius:10px;
-    background:linear-gradient(110deg,var(--green-l),#fff);border:1px solid var(--line)}
-  .result.fail{background:linear-gradient(110deg,var(--red-l),#fff)}
-  .rate{font-size:38px;font-weight:800;font-family:Arial,sans-serif;color:var(--green-d);line-height:1}
-  .result.fail .rate{color:var(--red)}
-  .rate small{font-size:16px;font-weight:600}
-  .rmeta{font-size:13px;color:var(--gray);line-height:1.7}
-  .rmeta b{color:var(--ink)}
-  .pass-pill{margin-left:auto;padding:8px 18px;border-radius:22px;font-weight:700;font-size:14px}
-  .pass-pill.ok{background:var(--green);color:#fff}
-  .pass-pill.no{background:var(--red);color:#fff}
-
-  /* ---------- buttons ---------- */
-  .bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-  .btn{padding:10px 20px;border-radius:9px;border:1px solid transparent;font-size:14px;font-weight:600;transition:.15s}
-  .btn.primary{background:var(--green);color:#fff}
-  .btn.primary:hover{background:var(--green-d)}
-  .btn.ghost{background:#fff;border-color:var(--line-d);color:var(--slate)}
-  .btn.ghost:hover{border-color:var(--green);color:var(--green-d)}
-  .btn.danger{background:#fff;border-color:var(--red);color:var(--red)}
-  .btn.danger:hover{background:var(--red);color:#fff}
-  .btn.sm{padding:6px 13px;font-size:13px}
-
-  /* ---------- summary ---------- */
-  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:6px}
-  .stat{background:#fff;border:1px solid var(--line);border-radius:11px;padding:16px 18px;position:relative;overflow:hidden}
-  .stat::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--green)}
-  .stat.red::before{background:var(--red)}
-  .stat.amber::before{background:var(--amber)}
-  .stat .n{font-size:30px;font-weight:800;font-family:Arial,sans-serif;color:var(--slate)}
-  .stat .n small{font-size:15px}
-  .stat .l{font-size:13px;color:var(--gray);margin-top:2px}
-
-  table.dt{width:100%;border-collapse:collapse;font-size:13.5px}
-  table.dt th{background:var(--slate);color:#fff;padding:10px 12px;text-align:left;font-weight:600;white-space:nowrap}
-  table.dt th:first-child{border-top-left-radius:8px}
-  table.dt th:last-child{border-top-right-radius:8px}
-  table.dt td{padding:9px 12px;border-bottom:1px solid var(--line)}
-  table.dt tbody tr:hover{background:var(--green-l)}
-  .pill{display:inline-block;padding:2px 11px;border-radius:13px;font-size:12px;font-weight:600}
-  .pill.ok{background:var(--green-l);color:var(--green-d)}
-  .pill.no{background:var(--red-l);color:var(--red)}
-  .mono{font-family:Arial,sans-serif}
-
-  /* pareto bars */
-  .pareto-row{display:flex;align-items:center;gap:12px;margin-bottom:9px}
-  .pareto-row .lbl{width:42%;font-size:13px;line-height:1.35}
-  .pareto-row .track{flex:1;background:var(--paper);border-radius:6px;height:26px;position:relative;overflow:hidden}
-  .pareto-row .fill{height:100%;background:linear-gradient(90deg,var(--red),#e35b58);border-radius:6px;
-    display:flex;align-items:center;justify-content:flex-end;padding-right:8px;color:#fff;font-size:12px;font-weight:700;
-    font-family:Arial,sans-serif;min-width:26px;transition:width .6s}
-  .chartbox{width:100%;overflow-x:auto;background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px 8px}
-  .chartbox svg{min-width:500px;display:block}
-  @media print{ .chartbox{border:none;padding:0;overflow:visible} .chartbox svg{min-width:0} }
-
-  .empty{text-align:center;padding:50px 20px;color:var(--gray)}
-  .empty .ic{font-size:46px;opacity:.4;margin-bottom:10px}
-
-  /* gallery */
-  .gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
-  .gcard{border:1px solid var(--line);border-radius:11px;overflow:hidden;background:#fff;box-shadow:var(--shadow)}
-  .gcard .gimg{height:170px;background:#000 center/cover}
-  .gcard .gbody{padding:11px 13px}
-  .gcard .gno{display:inline-block;background:var(--red);color:#fff;font-size:11px;font-family:Arial,sans-serif;
-    padding:1px 8px;border-radius:11px;font-weight:700;margin-bottom:6px}
-  .gcard .gtitle{font-size:13px;font-weight:600;line-height:1.4;margin-bottom:5px;color:var(--slate)}
-  .gcard .gcap{font-size:12px;color:var(--gray);line-height:1.45}
-  .gcard .gmeta{font-size:11px;color:var(--na);margin-top:7px;border-top:1px dashed var(--line);padding-top:6px}
-
-  .hint{font-size:13px;color:var(--gray);background:var(--green-l);border:1px solid var(--line);
-    border-radius:9px;padding:11px 14px;line-height:1.6}
-
-  .foot{text-align:center;font-size:12px;color:var(--na);padding:18px;font-family:"標楷體",serif}
-
-  .toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);background:var(--slate);color:#fff;
-    padding:12px 24px;border-radius:24px;font-size:14px;box-shadow:0 8px 28px rgba(0,0,0,.25);z-index:200;
-    animation:pop .25s}
-  @keyframes pop{from{opacity:0;transform:translate(-50%,12px)}}
-
-  /* ============ 手機版 RWD ============ */
-  @media (max-width:640px){
-    .topbar{position:static;padding:11px 15px;gap:11px}
-    .brand-h{width:36px;height:36px;font-size:21px;border-radius:8px}
-    .brand-txt h1{font-size:14.5px;line-height:1.3}
-    .brand-txt p{font-size:10.5px}
-    .docno{display:none}
-    .tabs{position:static;padding:0 6px}
-    .tab{padding:12px 12px;font-size:14px}
-    .wrap{margin:14px auto;padding:0 11px 70px}
-    .card{margin-bottom:16px;border-radius:11px}
-    .card-h{padding:12px 14px}
-    .card-h h2{font-size:15px}
-    .card-h .sub{display:none}
-    .card-b{padding:15px}
-
-    .g4,.g3,.g2{grid-template-columns:1fr}
-    .stats{grid-template-columns:1fr 1fr;gap:10px}
-    .stat{padding:13px 14px}
-    .stat .n{font-size:25px}
-
-    .roc input{flex:0 0 auto;width:60px;min-width:0;padding:9px 2px;text-align:center}
-
-    .item-row{flex-wrap:wrap;gap:9px;padding:12px}
-    .item-txt{flex:1 1 calc(100% - 38px);font-size:14.5px}
-    .seg{flex:1 1 100%;width:100%}
-    .seg button{flex:1;padding:12px 4px;font-size:14px}
-    .defbox{padding:0 13px 13px}
-    .defbox .dh{padding-top:12px}
-    .ph,.addph{width:84px;height:84px}
-
-    .result{flex-wrap:wrap;gap:12px;padding:15px}
-    .rate{font-size:32px}
-    .rmeta{flex:1 1 100%;order:2}
-    .pass-pill{margin-left:0;flex:1 1 100%;text-align:center;order:3}
-
-    /* 防止 iOS 對焦時自動放大（需 ≥16px） */
-    .fld input,.fld select,.roc input,.defbox textarea{font-size:16px}
-    .roc{flex-wrap:nowrap;gap:5px}
-    .roc .u{font-size:12px;flex:none}
-
-    /* 按鈕放大、易點 */
-    .bar{gap:8px}
-    .bar>.btn,.bar>label.btn{flex:1 1 auto;padding:12px 14px}
-    .chartbox svg{min-width:440px}
-
-    /* 寬表格 → 卡片式堆疊（免左右滑） */
-    table.dt-cards thead{display:none}
-    table.dt-cards,table.dt-cards tbody{display:block;width:100%}
-    table.dt-cards tr{display:block;border:1px solid var(--line);border-radius:11px;margin-bottom:11px;
-      padding:5px 2px;background:#fff;box-shadow:var(--shadow)}
-    table.dt-cards td{display:flex;justify-content:space-between;align-items:center;gap:12px;border:none;
-      padding:8px 14px;font-size:14.5px;border-bottom:1px solid #eef2f0}
-    table.dt-cards td:last-child{border-bottom:none}
-    table.dt-cards td::before{content:attr(data-label);font-weight:700;color:var(--gray);font-size:12.5px;flex:none}
-    table.dt-cards td.cell-idx{display:none}
-    table.dt-cards td.cell-wide{flex-direction:column;align-items:flex-start;gap:4px;text-align:left}
-    table.dt-cards td.cell-wide::before{font-size:12.5px}
-    table.dt-cards td.cell-act{justify-content:flex-start;gap:8px;padding-top:11px}
-    table.dt-cards td.cell-act::before{display:none}
-    table.dt-cards td.cell-act .btn{flex:1;padding:11px 4px;font-size:14px}
-  }
-
-  /* ============ PRINT (A4 黑白) ============ */
-  .print-area{display:none}
-  @media print{
-    @page{size:A4;margin:12mm 14mm}
-    @page land{size:A4 landscape;margin:9mm 10mm}
-    body{background:#fff;font-size:12pt}
-    .topbar,.tabs,.wrap,.toast{display:none!important}
-    .print-area{display:block!important}
-    .p-page{page-break-after:always}
-    .p-page:last-child{page-break-after:auto}
-    .p-land{page:land}
-  }
-  /* print sheet styling (visible structure reused) */
-  .p-doc{font-family:"標楷體","DFKai-SB",serif;color:#000}
-  table.p-head{width:100%;border-collapse:collapse;margin-bottom:6px}
-  table.p-head td{border:1px solid #000;padding:3px 6px;font-size:11pt}
-  .p-head .k{background:#f0f0f0;font-weight:700;text-align:center;white-space:nowrap;width:78px}
-  .p-meta{font-size:11.5pt;line-height:2}
-  .p-meta .ck{display:inline-block;width:13px;height:13px;border:1.2px solid #000;text-align:center;line-height:11px;
-    margin:0 3px;vertical-align:-1px;font-size:10pt}
-  table.p-items{width:100%;border-collapse:collapse;margin-top:8px}
-  table.p-items th,table.p-items td{border:1px solid #000;padding:5px 7px;font-size:10.5pt;vertical-align:top}
-  table.p-items th{background:#eaeaea;text-align:center;font-weight:700}
-  table.p-items td.c{text-align:center;width:48px}
-  table.p-items td.mk{font-weight:900;font-size:13pt}
-  .p-calc{margin-top:10px;font-size:11pt;line-height:2.1}
-  .p-frac{display:inline-block;text-align:center;vertical-align:middle;margin:0 4px}
-  .p-frac .num{border-bottom:1px solid #000;padding:0 8px}
-  .p-frac .den{padding:0 8px}
-  .p-sign{margin-top:18px;font-size:11pt}
-  .p-photos{margin-top:10px}
-  .p-photos .pp-full{width:100%;margin-bottom:12px;text-align:center}
-  .p-photos .pp-full img{max-width:88%;max-height:95mm;border:1px solid #000}
-  .p-photos .pp-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  .p-photos .pp-grid img{width:100%;height:62mm;object-fit:contain;border:1px solid #000;background:#fff}
-  .p-photos .pcap-no{color:#c8201c;font-weight:700;font-size:10.5pt;margin-bottom:3px}
-  .p-photos .pcap{font-size:10pt;margin-top:3px}
-  .p-title{text-align:center;font-size:15pt;font-weight:700;margin:4px 0 10px;letter-spacing:2px}
-  .p-foot{margin-top:14px;font-size:10pt;display:flex;justify-content:space-between;border-top:1px solid #000;padding-top:5px}
-  .p-detail{margin-bottom:16px;page-break-inside:avoid}
-  .p-dhead{font-size:10.5pt;font-weight:700;background:#eaeaea;border:1px solid #000;padding:5px 8px;
-    display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px}
-  .p-dhead .p-dright{font-weight:400}
-  .p-detail table.p-items{margin-top:0}
-  .p-deflabel{font-size:10pt;font-weight:700;color:#c8201c;margin:4px 0 4px}
-
-  /* 護理品管稽核總表（矩陣） */
-  .p-mtitle{text-align:center;font-size:15pt;font-weight:700;letter-spacing:2px;margin:2px 0 5px}
-  .p-mhead{font-size:11pt;margin-bottom:6px;text-align:center}
-  table.p-matrix{width:100%;border-collapse:collapse;table-layout:fixed}
-  table.p-matrix td{border:1px solid #000;font-size:8.6pt;padding:2px 2px;text-align:center;
-    line-height:1.25;word-break:break-word;vertical-align:middle}
-  table.p-matrix td.mh{background:#e9e9e9;font-weight:700}
-  table.p-matrix td.u{font-size:8.4pt}
-  table.p-matrix td.itxt{text-align:left;font-size:8.2pt;line-height:1.2;padding:2px 4px}
-  table.p-matrix td.c{font-family:Arial,"標楷體",serif}
-  table.p-matrix td.bad{color:#c8201c;font-weight:700}
-  table.p-matrix tr.agg td.mh{background:#f3f3f3}
-  table.p-sum{border-collapse:collapse;width:auto;table-layout:fixed}
-  table.p-sum td{border:1px solid #000;font-size:9.5pt;padding:4px 7px;vertical-align:middle}
-  table.p-sum td.sk{background:#e9e9e9;font-weight:700;width:140px;white-space:nowrap;text-align:center}
-  table.p-sum td.sv{width:74px;text-align:center;font-family:Arial,"標楷體",serif}
-  .p-botrow{display:flex;gap:10px;margin-top:8px;align-items:stretch}
-  .p-botrow table.p-sum{flex:none;height:fit-content}
-  .p-remark{flex:1;border:1px solid #000;padding:5px 9px;font-size:9pt;line-height:1.5}
-  .p-remark-h{font-weight:700;margin-bottom:2px}
-  .p-remark-text{white-space:pre-wrap;margin-bottom:4px}
-  .rdef{margin-bottom:5px;page-break-inside:avoid}
-  .rdef-lbl{font-size:9pt;font-weight:600}
-  .rdef-photos{display:flex;flex-wrap:wrap;gap:6px;margin-top:3px}
-  .rdef-ph{position:relative;display:inline-block}
-  .rdef-ph img{height:30mm;max-width:46mm;object-fit:contain;border:1px solid #000;background:#fff;display:block}
-  .rdef-tag{position:absolute;top:2px;left:2px;background:#c8201c;color:#fff;font-size:8pt;font-weight:700;
-    padding:0 5px;border-radius:2px;font-family:Arial,"標楷體",serif}
-  .rdef-none{color:#444;font-size:9pt}
-  .p-msign{margin-top:16px;font-size:10.5pt;text-align:center;letter-spacing:1px}
-</style>
-</head>
-<body>
-<div id="app">
-
-  <!-- ===== Top bar ===== -->
-  <div class="topbar">
-    <div class="brand-h">H</div>
-    <div class="brand-txt">
-      <h1>冷藏藥品冰箱管理標準作業　E化稽核系統</h1>
-      <p>TAIPEI CITY HOSPITAL ·  護理部護理品質管理委員會</p>
-    </div>
-    <div class="docno">NSR-Q-OQM-A21　第(14)版</div>
+  <div class="tabs" role="tablist">
+    <button class="tab" id="tab-single" role="tab" aria-selected="true" onclick="switchTab('single')">單張製作</button>
+    <button class="tab" id="tab-batch" role="tab" aria-selected="false" onclick="switchTab('batch')">批次製作</button>
+    <button class="tab" id="tab-lib" role="tab" aria-selected="false" onclick="switchTab('lib')">品項庫</button>
   </div>
 
-  <!-- ===== Tabs ===== -->
-  <div class="tabs">
-    <button class="tab" :class="{on:tab==='entry'}" @click="tab='entry'">稽核作業</button>
-    <button class="tab" :class="{on:tab==='records'}" @click="tab='records'">稽核總表<span v-if="records.length" class="badge">{{records.length}}</span></button>
-    <button class="tab" :class="{on:tab==='photos'}" @click="tab='photos'">缺失照片登錄<span v-if="allDefects.length" class="badge">{{allDefects.length}}</span></button>
-    <button class="tab" :class="{on:tab==='data'}" @click="tab='data'">資料管理</button>
-  </div>
-
-  <div class="wrap">
-
-    <!-- ============ 稽核作業 ============ -->
-    <div v-show="tab==='entry'">
+  <!-- SINGLE -->
+  <section id="panel-single">
+    <div class="card qp-card">
+      <h2>常備品項快捷 — 點選帶入</h2>
+      <p class="qp-hint">點一下品項即帶入「水劑名稱＋GHS 危害圖示」，可再自行調整。庫存品項可在「品項庫」分頁維護。</p>
+      <input type="text" id="qpS" class="qp-search" placeholder="搜尋品項（例：酒精、鹽酸、氧氣、克菌寧）…" oninput="renderQP('single')">
+      <div class="qp-list" id="qpListSingle"></div>
+    </div>
+    <div class="grid">
       <div class="card">
-        <div class="card-h"><span class="tag"></span><h2>受評基本資料</h2>
-          <span class="sub" v-if="editingId">編輯中（序號 {{editIndex+1}}）</span>
-          <span class="sub" v-else>新增稽核</span>
+        <h2>填寫內容 — 單張</h2>
+        <div class="field"><label for="s_name">水劑名稱</label><input type="text" id="s_name" value="克菌寧殺菌液 2%" oninput="renderSingle()"></div>
+        <div class="field"><label>庫存設定量（固定列印）</label>
+          <div class="twocol">
+            <div><div class="sublbl">最大量 MAX</div><input type="text" id="s_max" value="20 瓶" oninput="renderSingle()"></div>
+            <div><div class="sublbl">最小量 MIN</div><input type="text" id="s_min" value="5 瓶" oninput="renderSingle()"></div>
+          </div>
         </div>
-        <div class="card-b">
-          <div class="grid g4">
-            <div class="fld"><label>受評單位</label>
-              <select v-model="form.unit">
-                <option value="">請選擇單位</option>
-                <option v-for="u in unitList" :key="u" :value="u">{{u}}</option>
-              </select>
-            </div>
-            <div class="fld"><label>受評者（選填）</label><input v-model.trim="form.ratee" placeholder="受稽核者姓名"></div>
-            <div class="fld"><label>稽核者</label><input v-model.trim="form.auditor" placeholder="稽核人員"></div>
-            <div class="fld"><label>稽核日期（民國）</label>
-              <div class="roc">
-                <input type="number" v-model.number="form.y"><span class="u">年</span>
-                <input type="number" v-model.number="form.m"><span class="u">月</span>
-                <input type="number" v-model.number="form.d"><span class="u">日</span>
-              </div>
-            </div>
-          </div>
-          <div class="fld" style="margin-top:14px">
-            <label>稽核方式</label>
-            <div class="methods">
-              <label v-for="mth in methodList" :key="mth" class="chk" :class="{on:form.methods.includes(mth)}">
-                <input type="checkbox" :value="mth" v-model="form.methods">
-                <span class="box">{{form.methods.includes(mth)?'✓':''}}</span>{{mth}}
-              </label>
-            </div>
-          </div>
+        <div class="note">到期日期不印在表上，採數字方格留白——護貝後以白板筆／油性筆填寫，可重複擦寫換新。</div>
+        <div class="field"><label>GHS 危害圖示</label><div class="ghs-pick" id="ghsSingle"></div></div>
+        <div class="actions">
+          <button class="btn primary" onclick="printOne(false)">列印這張</button>
+          <button class="btn ghost" onclick="printOne(true)">列印整頁 4 張</button>
+          <button class="btn ghost" onclick="pushToBatch()">＋ 加入批次</button>
         </div>
       </div>
-
       <div class="card">
-        <div class="card-h"><span class="tag"></span><h2>稽核內容</h2>
-          <span class="sub">閾值 100%　·　共 {{items.length}} 項　·　不正確項目可登錄缺失照片</span>
-        </div>
-        <div class="card-b">
-          <div v-for="(it,i) in items" :key="i" class="item" :class="{bad:form.answers[i]==='bad'}">
-            <div class="item-row">
-              <div class="item-no">{{i+1}}</div>
-              <div class="item-txt">{{it}}</div>
-              <div class="seg">
-                <button class="s-ok" :class="{on:form.answers[i]==='ok'}" @click="setAns(i,'ok')">正確</button>
-                <button class="s-bad" :class="{on:form.answers[i]==='bad'}" @click="setAns(i,'bad')">不正確</button>
-                <button class="s-na" :class="{on:form.answers[i]==='na'}" @click="setAns(i,'na')">不適用</button>
-              </div>
-            </div>
-            <div v-if="form.answers[i]==='bad'" class="defbox">
-              <div class="dh">⚠ 缺失說明與照片登錄</div>
-              <textarea v-model="form.defects[i].note" placeholder="說明缺失情形（例如：未標示開瓶日期、溫度逾 8℃ 等）"></textarea>
-              <div class="photos">
-                <div v-for="(p,pi) in form.defects[i].photos" :key="pi" class="ph">
-                  <img :src="p.src">
-                  <button class="del" @click="form.defects[i].photos.splice(pi,1)">×</button>
-                </div>
-                <label class="addph">＋ 加入<br>缺失照片
-                  <input type="file" accept="image/*" multiple style="display:none" @change="addPhotos($event,i)">
-                </label>
-              </div>
-            </div>
-          </div>
-        </div>
+        <div class="stage-head"><h2 style="margin:0">即時預覽</h2><span class="tip">A4 原寸列印・每頁 4 張</span></div>
+        <div class="pv-stage"><div class="label-wrap" id="pvLabel"></div></div>
       </div>
+    </div>
+  </section>
 
+  <!-- BATCH -->
+  <section id="panel-batch" style="display:none">
+    <div class="card qp-card">
+      <h2>常備品項快捷 — 點選帶入下方表單</h2>
+      <p class="qp-hint">點品項帶入名稱與 GHS，填好最大／最小量後按「新增到清單」。</p>
+      <input type="text" id="qpB" class="qp-search" placeholder="搜尋品項…" oninput="renderQP('batch')">
+      <div class="qp-list" id="qpListBatch"></div>
+    </div>
+    <div class="grid">
       <div class="card">
-        <div class="card-b">
-          <div class="result" :class="{fail:!passed && stat.scored>0}">
-            <div class="rate">{{stat.scored? stat.rate : '–'}}<small>%</small></div>
-            <div class="rmeta">
-              正確 <b>{{stat.ok}}</b> 項　·　不正確 <b>{{stat.bad}}</b> 項　·　不適用 <b>{{stat.na}}</b> 項<br>
-              正確率 ＝ 正確項目 ÷（正確項目＋不正確項目）× 100
-            </div>
-            <span v-if="stat.scored>0" class="pass-pill" :class="passed?'ok':'no'">
-              {{passed?'達閾值　通過':'未達閾值　不通過'}}
-            </span>
-          </div>
-          <div class="bar" style="margin-top:16px">
-            <button class="btn primary" @click="saveRecord">{{editingId?'更新此筆':'儲存稽核'}}</button>
-            <button class="btn ghost" @click="resetForm">清空表單</button>
-            <button v-if="editingId" class="btn danger" @click="cancelEdit">取消編輯</button>
-            <span style="margin-left:auto;color:var(--gray);font-size:13px">已儲存 {{records.length}} 筆稽核紀錄</span>
+        <h2>新增到清單 — 批次</h2>
+        <div class="field"><label for="b_name">水劑名稱</label><input type="text" id="b_name" placeholder="例：75% 酒精性乾洗手液"></div>
+        <div class="field"><label>庫存設定量</label>
+          <div class="twocol">
+            <div><div class="sublbl">最大量 MAX</div><input type="text" id="b_max" placeholder="20 瓶"></div>
+            <div><div class="sublbl">最小量 MIN</div><input type="text" id="b_min" placeholder="5 瓶"></div>
           </div>
         </div>
+        <div class="field"><label>GHS 危害圖示</label><div class="ghs-pick" id="ghsBatch"></div></div>
+        <div class="actions"><button class="btn primary" id="batchAddBtn" onclick="addBatchRow()">＋ 新增到清單</button><button class="btn ghost" id="batchCancelBtn" onclick="cancelEdit()" style="display:none">取消編輯</button></div>
+        <div style="margin-top:18px">
+          <div class="field" style="margin-bottom:8px"><label for="b_bulk">批次貼上（一行一筆，格式：名稱，最大量，最小量）</label>
+            <textarea class="bulk-in" id="b_bulk" placeholder="克菌寧殺菌液 2%，20，5&#10;75% 酒精，12，3"></textarea></div>
+          <button class="btn ghost" onclick="bulkImport()">批次匯入</button>
+        </div>
       </div>
-    </div>
-
-    <!-- ============ 稽核總表 ============ -->
-    <div v-show="tab==='records'">
       <div class="card">
-        <div class="card-h"><span class="tag"></span><h2>稽核統計總覽</h2>
-          <span class="sub">{{filterUnit||'全部單位'}}</span>
-        </div>
-        <div class="card-b">
-          <div class="bar" style="margin-bottom:16px">
-            <div class="fld" style="min-width:180px">
-              <label>篩選單位</label>
-              <select v-model="filterUnit">
-                <option value="">全部單位</option>
-                <option v-for="u in unitOptions" :key="u" :value="u">{{u}}</option>
-              </select>
-            </div>
-            <div style="margin-left:auto;align-self:flex-end">
-              <button class="btn ghost sm" @click="printSummary" :disabled="!filtered.length">列印總表</button>
-            </div>
-          </div>
-
-          <div class="stats">
-            <div class="stat"><div class="n">{{summary.total}}</div><div class="l">稽核總人數</div></div>
-            <div class="stat"><div class="n">{{summary.pass}}</div><div class="l">達閾值通過人數</div></div>
-            <div class="stat" :class="summary.passRate>=80?'':'amber'">
-              <div class="n">{{summary.passRate}}<small>%</small></div><div class="l">單位護理人員通過率</div></div>
-            <div class="stat red"><div class="n">{{summary.defectCount}}</div><div class="l">缺失項目總數</div></div>
-          </div>
-
-          <div class="fld" style="margin-top:16px">
-            <label>備註（列印總表時顯示於備註欄）</label>
-            <textarea v-model="summaryNote" @input="persistNote" rows="3"
-              style="width:100%;padding:9px 11px;border:1px solid var(--line-d);border-radius:8px;font-size:14px;resize:vertical"
-              placeholder="例：1. … 2. … 3. …（可條列稽核發現與待改善事項）"></textarea>
-          </div>
-        </div>
-      </div>
-
-      <div class="card" v-if="filtered.length">
-        <div class="card-h"><span class="tag"></span><h2>稽核紀錄明細</h2></div>
-        <div class="card-b" style="overflow-x:auto">
-          <table class="dt dt-cards">
-            <thead><tr>
-              <th>序</th><th>受評單位</th><th>稽核日期</th><th>稽核者</th>
-              <th>正確</th><th>不正確</th><th>不適用</th><th>正確率</th><th>結果</th><th>缺失照片</th><th>操作</th>
-            </tr></thead>
-            <tbody>
-              <tr v-for="(r,i) in filtered" :key="r.id">
-                <td class="mono cell-idx">{{i+1}}</td>
-                <td data-label="受評單位"><b>{{r.unit||'—'}}</b></td>
-                <td class="mono" data-label="稽核日期">{{r.y}}/{{pad(r.m)}}/{{pad(r.d)}}</td>
-                <td data-label="稽核者">{{r.auditor||'—'}}</td>
-                <td class="mono" data-label="正確">{{calc(r).ok}}</td>
-                <td class="mono" data-label="不正確" :style="calc(r).bad?'color:var(--red);font-weight:700':''">{{calc(r).bad}}</td>
-                <td class="mono" data-label="不適用">{{calc(r).na}}</td>
-                <td class="mono" data-label="正確率"><b>{{calc(r).scored? calc(r).rate+'%':'—'}}</b></td>
-                <td data-label="結果"><span class="pill" :class="calc(r).pass?'ok':'no'">{{calc(r).pass?'通過':'不通過'}}</span></td>
-                <td class="mono" data-label="缺失照片">{{photoCount(r)}}</td>
-                <td class="cell-act">
-                  <button class="btn ghost sm" @click="editRecord(r)">編輯</button>
-                  <button class="btn ghost sm" @click="printOne(r)">列印</button>
-                  <button class="btn danger sm" @click="delRecord(r.id)">刪除</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="card" v-if="pareto">
-        <div class="card-h"><span class="tag"></span><h2>缺失項目柏拉圖（Pareto）</h2>
-          <span class="sub">長條＝缺失次數　·　折線＝累積百分比　·　虛線＝80%</span></div>
-        <div class="card-b">
-          <div class="chartbox"><pareto-chart :p="pareto"></pareto-chart></div>
-          <table class="dt dt-cards" style="margin-top:16px">
-            <thead><tr><th>排序</th><th>稽核項目</th><th>缺失次數</th><th>百分比</th><th>累積百分比</th></tr></thead>
-            <tbody>
-              <tr v-for="(r,i) in pareto.rows" :key="r.idx">
-                <td class="mono" data-label="排序">{{i+1}}</td>
-                <td class="cell-wide" data-label="稽核項目"><b class="mono">{{r.idx+1}}.</b> {{r.full}}</td>
-                <td class="mono" data-label="缺失次數">{{r.count}}</td>
-                <td class="mono" data-label="百分比">{{r.pct}}%</td>
-                <td class="mono" data-label="累積百分比"><b>{{r.cumPct}}%</b></td>
-              </tr>
-            </tbody>
-          </table>
-          <div class="hint" style="margin-top:12px">依柏拉圖 80/20 原則，累積百分比達 80% 前之項目屬「重要少數」，建議列為優先改善重點並追蹤複查。</div>
-        </div>
-      </div>
-
-      <div class="card" v-if="!filtered.length">
-        <div class="card-b"><div class="empty"><div class="ic">📋</div>尚無稽核紀錄，請至「稽核作業」新增。</div></div>
+        <div class="list-head"><h2 style="margin:0">列印清單 <span class="count-pill" id="bCount">0</span></h2>
+          <div style="display:flex;gap:8px"><button class="btn primary" onclick="printBatch()">列印全部</button><button class="btn danger" onclick="clearBatch()">清空</button></div></div>
+        <div id="batchList"></div>
       </div>
     </div>
+  </section>
 
-    <!-- ============ 缺失照片登錄 ============ -->
-    <div v-show="tab==='photos'">
-      <div class="card">
-        <div class="card-h"><span class="tag"></span><h2>缺失照片登錄表</h2>
-          <span class="sub">共 {{allDefects.length}} 張缺失照片</span></div>
-        <div class="card-b">
-          <div class="bar" style="margin-bottom:16px">
-            <div class="hint" style="flex:1">每張缺失照片均標示對應稽核項目編號、受評單位、缺失說明，供品質討論與佐證使用。</div>
-            <button class="btn ghost" @click="printPhotos" :disabled="!allDefects.length" style="align-self:center">列印照片登錄表</button>
-          </div>
-          <div v-if="allDefects.length" class="gal">
-            <div v-for="(d,i) in allDefects" :key="i" class="gcard">
-              <div class="gimg" :style="{backgroundImage:'url('+d.src+')'}"></div>
-              <div class="gbody">
-                <span class="gno">項目 {{d.itemNo}}</span>
-                <div class="gtitle">{{d.itemText}}</div>
-                <div class="gcap">{{d.note||'（未填寫缺失說明）'}}</div>
-                <div class="gmeta">受評單位：{{d.unit||'—'}}　·　{{d.date}}</div>
-              </div>
-            </div>
-          </div>
-          <div v-else class="empty"><div class="ic">📷</div>尚無缺失照片。於稽核作業中將項目標為「不正確」即可登錄照片。</div>
-        </div>
+  <!-- LIBRARY -->
+  <section id="panel-lib" style="display:none">
+    <div class="card">
+      <h2>品項庫維護 — 名稱與 GHS 可修正、存檔</h2>
+      <p class="qp-hint">點圖示可開／關該品項的 GHS（亮起＝套用）；名稱可直接修改；修改會自動存到此瀏覽器。GHS 預設依常見 SDS 分類，<b>請以實際產品 SDS 為準</b>。</p>
+      <div class="lib-toolbar">
+        <input type="text" id="libSearch" class="qp-search" placeholder="搜尋品項…" oninput="renderLibMgr()">
+        <button class="btn sm primary" onclick="addLib()">＋ 新增品項</button>
+        <button class="btn sm ghost" onclick="resetLib()">↺ 還原內建清單</button>
+        <span class="count-pill" id="libCount">0</span>
       </div>
+      <div id="libList"></div>
     </div>
+  </section>
 
-    <!-- ============ 資料管理 ============ -->
-    <div v-show="tab==='data'">
-      <div class="card">
-        <div class="card-h"><span class="tag"></span><h2>資料備份與管理</h2></div>
-        <div class="card-b">
-          <div class="hint" style="margin-bottom:16px">
-            資料儲存於本機瀏覽器（localStorage）。建議定期匯出 JSON 備份；可於其他電腦匯入續用。
-          </div>
-          <div class="bar">
-            <button class="btn primary" @click="exportJSON">匯出 JSON 備份</button>
-            <label class="btn ghost">匯入 JSON<input type="file" accept=".json" style="display:none" @change="importJSON"></label>
-            <button class="btn danger" @click="clearAll">清除全部資料</button>
-          </div>
-          <p style="margin-top:14px;font-size:13px;color:var(--gray)">目前共 {{records.length}} 筆稽核紀錄。</p>
-        </div>
-      </div>
-    </div>
+  <footer class="foot">© 鄭瑞賢 製作・版權所有</footer>
+</div>\n<div id="printRoot"></div>\n<script>
+var INK="#16140f",GRAY="#8f8f86",RED="#d5202a";
+var LOGO_INNER=
+ '<g fill="#0a6135"><rect x="18" y="6" width="29" height="121" rx="14.5"/>'+
+ '<rect x="83" y="6" width="29" height="121" rx="14.5"/><rect x="18" y="55" width="94" height="21"/></g>'+
+ '<path fill="#d51f29" d="M3,69 C1,43 20,15 52,8 C84,2 108,2 121,4 C107,6 80,11 55,18 C27,26 13,47 12,66 C12,71 7,73 3,69 Z"/>'+
+ '<path fill="#143a82" d="M123,57 C132,80 112,100 78,106 C58,109 42,108 29,104 C42,104 58,103 78,99 C110,90 122,70 123,57 Z"/>'+
+ '<path fill="#f6d200" d="M24,80 C40,110 80,124 110,114 C120,110 126,105 128,96 C122,104 100,114 74,110 C52,106 38,96 28,84 C26,82 24,81 24,80 Z"/>';
+function logoSVG(){return '<svg viewBox="0 0 131 133" xmlns="http://www.w3.org/2000/svg">'+LOGO_INNER+'</svg>';}
+/* 標準 GHS 危害圖示（紅框白底黑符號・公開標準符號） */
+var GHS_FRAME='<rect x="17" y="17" width="66" height="66" rx="7" transform="rotate(45 50 50)" fill="#ffffff" stroke="#e60012" stroke-width="8"/>';
+var GHS={
+ flame:{zh:'易燃物',sym:'<path fill="#1a1a1a" d="M50 27 C 55 36 63 39 62 49 C 61 54 58 57 54 58 C 57 53 54 49 51 50 C 54 56 50 60 51 66 C 51 69 54 71 57 71 C 46 71 39 63 41 53 C 42 47 46 44 46 38 C 49 42 52 43 53 41 C 49 36 48 31 50 27 Z"/><path fill="#1a1a1a" d="M41 45 C 38 50 38 56 42 61 C 36 58 33 50 37 44 C 38 46 40 46 41 45 Z"/><rect x="34" y="72" width="32" height="4.5" rx="1.5" fill="#1a1a1a"/>'},
+ excl:{zh:'刺激／警告',sym:'<path fill="#1a1a1a" d="M46 32 h8 l-2 24 h-4 z"/><circle cx="50" cy="63" r="4.2" fill="#1a1a1a"/>'},
+ oxid:{zh:'氧化劑',sym:'<path fill="none" stroke="#1a1a1a" stroke-width="6" d="M50 54 m -13 7 a 13 13 0 1 0 26 0 a 13 13 0 1 0 -26 0"/><path fill="#1a1a1a" d="M49 26 C 54 35 62 38 61 48 C 60 53 57 55 53 56 C 56 51 53 48 50 49 C 53 54 49 57 50 61 C 44 59 39 53 42 46 C 43 48 46 48 47 47 C 43 41 45 33 49 26 Z"/><rect x="33" y="76" width="34" height="4.5" rx="1.5" fill="#1a1a1a"/>'},
+ corr:{zh:'腐蝕物',sym:'<g fill="none" stroke="#1a1a1a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M30 32 l8 14"/><path d="M30 32 l-3 2 l8 14 l3 -2 z" fill="#1a1a1a" stroke="none"/><path d="M70 32 l-8 14"/><path d="M70 32 l3 2 l-8 14 l-3 -2 z" fill="#1a1a1a" stroke="none"/></g><g stroke="#1a1a1a" stroke-width="1.8" fill="none"><path d="M34 50 q1 4 -1 7"/><path d="M37 50 q1 4 -1 7"/><path d="M60 50 q1 4 -1 7"/><path d="M63 50 q1 4 -1 7"/></g><rect x="28" y="62" width="20" height="4" fill="#1a1a1a"/><path d="M34 62 l3 5 l3 -5 z" fill="#fff" stroke="#1a1a1a" stroke-width="1.5"/><path d="M55 64 q4 -3 9 -2 q5 1 8 4 l-1 3 q-3 -2 -7 -2 l-2 2 l-2 -2 l-2 1 l-1 -2 l-2 1 z" fill="#1a1a1a"/>'},
+ skull:{zh:'急性毒性',sym:'<g stroke="#1a1a1a" stroke-width="5" stroke-linecap="round"><line x1="36" y1="58" x2="64" y2="78"/><line x1="64" y1="58" x2="36" y2="78"/></g><circle cx="36" cy="58" r="3.2" fill="#1a1a1a"/><circle cx="64" cy="58" r="3.2" fill="#1a1a1a"/><circle cx="36" cy="78" r="3.2" fill="#1a1a1a"/><circle cx="64" cy="78" r="3.2" fill="#1a1a1a"/><path d="M50 30 c -11 0 -18 7 -18 17 c 0 6 3 10 6 12 c 1 1 1 3 1 4 h22 c 0 -1 0 -3 1 -4 c 3 -2 6 -6 6 -12 c 0 -10 -7 -17 -18 -17 z" fill="#fff" stroke="#1a1a1a" stroke-width="2.6"/><ellipse cx="43" cy="48" rx="4.5" ry="5" fill="#1a1a1a"/><ellipse cx="57" cy="48" rx="4.5" ry="5" fill="#1a1a1a"/><path d="M50 53 l -3 6 h6 z" fill="#1a1a1a"/>'},
+ gas:{zh:'壓縮氣體',sym:'<g transform="rotate(-32 50 52)"><rect x="44" y="30" width="12" height="40" rx="6" fill="#1a1a1a"/><rect x="47.5" y="24" width="5" height="8" rx="1.5" fill="#1a1a1a"/></g>'},
+ health:{zh:'健康危害',sym:'<ellipse cx="50" cy="38" rx="8.5" ry="9.5" fill="#1a1a1a"/><path d="M31 74 C 31 60 39 52 50 52 C 61 52 69 60 69 74 Z" fill="#1a1a1a"/><path d="M50 53 l2.4 7.5 7.8 0 -6.3 4.6 2.4 7.5 -6.3 -4.6 -6.3 4.6 2.4 -7.5 -6.3 -4.6 7.8 0 z" fill="#fff"/>'},
+ expl:{zh:'爆炸物',sym:'<circle cx="49" cy="54" r="7" fill="#1a1a1a"/><path fill="#1a1a1a" d="M54.1 47.3 L68.7 40.2 L57.0 51.5 Z"/><path fill="#1a1a1a" d="M49.5 45.7 L58.6 27.7 L54.0 47.3 Z"/><path fill="#1a1a1a" d="M44.8 46.8 L43.3 32.7 L49.1 45.7 Z"/><path fill="#1a1a1a" d="M42.4 48.8 L34.1 32.7 L46.4 46.1 Z"/><path fill="#1a1a1a" d="M41.1 51.7 L31.7 44.0 L43.1 48.3 Z"/><path fill="#1a1a1a" d="M57.3 53.0 L72.6 58.2 L56.5 57.8 Z"/><path fill="#1a1a1a" d="M56.7 57.0 L65.4 65.5 L54.4 60.2 Z"/><path fill="#1a1a1a" d="M54.9 59.8 L60.5 73.9 L51.1 62.0 Z"/><path fill="#1a1a1a" d="M47.4 62.1 L40.5 72.1 L43.8 60.4 Z"/><path fill="#1a1a1a" d="M42.1 58.4 L31.1 60.5 L40.9 55.0 Z"/><circle cx="36" cy="68" r="2.2" fill="#1a1a1a"/><circle cx="64" cy="40" r="1.8" fill="#1a1a1a"/>'},
+ env:{zh:'環境危險',sym:'<path fill="#1a1a1a" d="M28 70 q6 -3 12 0 q6 3 12 0 q6 -3 12 0 q6 3 10 0 l0 6 -56 0 z"/><g stroke="#1a1a1a" stroke-width="2.6" fill="none" stroke-linecap="round"><path d="M39 70 V38"/><path d="M39 50 l-8 -8"/><path d="M39 46 l8 -9"/><path d="M39 55 l7 -7"/><path d="M39 43 l-7 -6"/><path d="M39 39 l-5 -7"/><path d="M39 39 l6 -6"/></g><path fill="#1a1a1a" d="M50 60 q9 -8 19 -5 q-3 4 -3 6 q0 3 3 6 q-10 3 -19 -5 z"/><path d="M68 55 l6 -4 -1 8 z" fill="#1a1a1a"/><circle cx="55" cy="60" r="1.6" fill="#fff"/><line x1="29" y1="61" x2="71" y2="61" stroke="#1a1a1a" stroke-width="2"/>'}
+};
+var GHS_ORDER=['flame','excl','oxid','corr','skull','gas','health','expl','env'];
+function ghsInner(k){return GHS_FRAME+GHS[k].sym;}
+function ghsIcon(k){return '<svg viewBox="0 0 100 100" width="40" height="40" xmlns="http://www.w3.org/2000/svg">'+ghsInner(k)+'</svg>';}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function cjkW(s){var w=0;for(var i=0;i<s.length;i++)w+=/[\u0000-\u00ff]/.test(s[i])?0.56:1;return w;}
+function fitFont(s,b,base,mn){var w=cjkW(s)||1;return Math.max(mn,Math.min(base,b/w));}
 
-    <div class="foot">© 鄭瑞賢 製作・版權所有　|　維護單位：護理部護理品質管理委員會</div>
-  </div>
+var GF="'Noto Sans TC','Microsoft JhengHei','Heiti TC',sans-serif";
+function batchRow(y,mark){
+  var s='';
+  s+='<text x="50" y="'+(y+20)+'" font-size="17" font-weight="800" fill="'+RED+'">'+mark+'</text>';
+  s+='<text x="70" y="'+(y+20)+'" font-size="14" font-weight="700" fill="'+INK+'">批號</text>';
+  s+='<line x1="104" y1="'+(y+24)+'" x2="190" y2="'+(y+24)+'" stroke="'+INK+'" stroke-width="1.6"/>';
+  s+='<text x="200" y="'+(y+20)+'" font-size="13" font-weight="600" fill="'+GRAY+'">到期</text>';
+  s+='<text x="232" y="'+(y+20)+'" font-size="15" font-weight="700" fill="'+INK+'">民國</text>';
+  function bx(xx){return '<rect x="'+xx+'" y="'+y+'" width="26" height="28" rx="2.5" fill="#ffffff" stroke="'+RED+'" stroke-width="2"/>';}
+  var x=278,i;
+  for(i=0;i<3;i++){s+=bx(x);x+=29;}
+  s+='<text x="'+(x+1)+'" y="'+(y+20)+'" font-size="15" font-weight="700" fill="'+INK+'">年</text>';x+=22;
+  for(i=0;i<2;i++){s+=bx(x);x+=29;}
+  s+='<text x="'+(x+1)+'" y="'+(y+20)+'" font-size="15" font-weight="700" fill="'+INK+'">月</text>';x+=22;
+  for(i=0;i<2;i++){s+=bx(x);x+=29;}
+  s+='<text x="'+(x+1)+'" y="'+(y+20)+'" font-size="15" font-weight="700" fill="'+INK+'">日</text>';
+  return s;
+}
+function buildLabel(d){
+  var name=d.name||'　', nameFs=fitFont(name,840,30,16);
+  var maxFs=fitFont(d.max||' ',120,30,15), minFs=fitFont(d.min||' ',120,30,15);
+  var s='<svg viewBox="0 0 1000 330" xmlns="http://www.w3.org/2000/svg" font-family="'+GF+'">';
+  s+='<rect width="1000" height="330" fill="#ffffff"/>';
+  s+='<rect x="9" y="9" width="982" height="312" rx="2" fill="none" stroke="'+INK+'" stroke-width="2.5"/>';
+  /* header */
+  s+='<text x="44" y="48" font-size="20" font-weight="800" fill="'+INK+'" letter-spacing="6">藥劑安全標示</text>';
+  s+='<svg x="903" y="26" width="42" height="43" viewBox="0 0 131 133">'+LOGO_INNER+'</svg>';
+  s+='<text x="888" y="44" text-anchor="end" font-size="12" font-weight="600" fill="'+INK+'">臺北市立聯合醫院</text>';
+  s+='<text x="888" y="64" text-anchor="end" font-size="15" font-weight="800" fill="'+INK+'" letter-spacing="1">仁愛院區</text>';
+  s+='<line x1="44" y1="74" x2="956" y2="74" stroke="'+INK+'" stroke-width="1.6"/>';
+  /* name */
+  s+='<text x="44" y="94" font-size="10.5" font-weight="600" fill="'+GRAY+'" letter-spacing="4">品名　NAME</text>';
+  s+='<text x="44" y="124" font-size="'+nameFs+'" font-weight="800" fill="'+INK+'" letter-spacing="1">'+esc(name)+'</text>';
+  /* expiry warning box — TWO batch rows (lot no. + expiry, handwritten) */
+  s+='<rect x="36" y="136" width="610" height="116" rx="6" fill="#fdf3f2" stroke="'+RED+'" stroke-width="2.2"/>';
+  s+='<path d="M58 142 l10 17 h-20 z" fill="'+RED+'"/><rect x="56.8" y="148" width="2.4" height="6" fill="#fff"/><circle cx="58" cy="157" r="1.4" fill="#fff"/>';
+  s+='<text x="74" y="158" font-size="13" font-weight="800" fill="'+RED+'" letter-spacing="2">到期日期　EXPIRY（雙批號）</text>';
+  s+=batchRow(166,'①');
+  s+='<line x1="46" y1="206" x2="636" y2="206" stroke="#f1cfcd" stroke-width="1.2"/>';
+  s+=batchRow(212,'②');
+  /* right: 最大量 / 最小量 (printed, stacked) */
+  s+='<line x1="664" y1="138" x2="664" y2="250" stroke="#dcdcd4" stroke-width="1.6"/>';
+  s+='<text x="690" y="160" font-size="11" font-weight="600" fill="'+GRAY+'" letter-spacing="2">最大量　MAX</text>';
+  s+='<text x="690" y="192" font-size="'+maxFs+'" font-weight="800" fill="'+INK+'">'+esc(d.max||'')+'</text>';
+  s+='<line x1="690" y1="205" x2="946" y2="205" stroke="#e8e8e1" stroke-width="1.2"/>';
+  s+='<text x="690" y="222" font-size="11" font-weight="600" fill="'+GRAY+'" letter-spacing="2">最小量　MIN</text>';
+  s+='<text x="690" y="246" font-size="'+minFs+'" font-weight="800" fill="'+INK+'">'+esc(d.min||'')+'</text>';
+  /* bottom */
+  s+='<line x1="44" y1="262" x2="956" y2="262" stroke="'+INK+'" stroke-width="1.6"/>';
+  var gx=46;
+  (d.ghs||[]).forEach(function(k){ if(GHS[k]){ s+='<svg x="'+gx+'" y="270" width="44" height="44" viewBox="0 0 100 100">'+ghsInner(k)+'</svg>'; gx+=50; } });
+  s+='<text x="956" y="298" text-anchor="end" font-size="19" font-weight="800" fill="'+RED+'" letter-spacing="5">嚴禁煙火</text>';
+  s+='</svg>';
+  return s;
+}
 
-  <!-- ===== Print area ===== -->
-  <div class="print-area">
-    <!-- 個別稽核表 -->
-    <div v-for="r in printRecords" :key="'p'+r.id" class="p-page p-doc">
-      <table class="p-head">
-        <tr>
-          <td class="k">標準名稱</td><td>冷藏藥品冰箱管理標準作業</td>
-          <td class="k">文件編號</td><td class="mono">NSR-Q-OQM-A21</td>
-        </tr>
-        <tr>
-          <td class="k">製表單位</td><td>護理部護理品質管理委員會</td>
-          <td class="k">版本</td><td>第(14)版　第(4)頁/共(7)頁</td>
-        </tr>
-      </table>
-      <div class="p-meta">
-        稽核名稱：冷藏藥品冰箱管理標準作業正確率　　　　閾值：100%<br>
-        受評單位：{{r.unit||'　　　　'}}　　稽核者：{{r.auditor||'　　　　'}}<br>
-        稽核日期：中華民國 {{r.y}} 年 {{r.m}} 月 {{r.d}} 日<br>
-        稽核方式：
-        <span v-for="mth in methodList" :key="mth">
-          <span class="ck">{{r.methods.includes(mth)?'✓':''}}</span>{{mth}}　
-        </span>
-      </div>
-      <table class="p-items">
-        <thead><tr><th style="width:auto">稽核內容</th><th style="width:48px">正確</th><th style="width:54px">不正確</th><th style="width:54px">不適用</th></tr></thead>
-        <tbody>
-          <tr v-for="(it,i) in items" :key="i">
-            <td>{{i+1}}. {{it}}</td>
-            <td class="c mk">{{r.answers[i]==='ok'?'✓':''}}</td>
-            <td class="c mk" style="color:#c8201c">{{r.answers[i]==='bad'?'✓':''}}</td>
-            <td class="c mk">{{r.answers[i]==='na'?'✓':''}}</td>
-          </tr>
-        </tbody>
-      </table>
-      <div class="p-calc">
-        稽核表結果計算方式<br>
-        (1) 冷藏藥品冰箱管理正確率(%)：
-        <span class="p-frac"><span class="num">正確項目（{{calc(r).ok}}）</span><span class="den">正確項目＋不正確項目（{{calc(r).ok+calc(r).bad}}）</span></span> × 100
-        ＝ <b>{{calc(r).scored?calc(r).rate:'—'}} %</b>　
-        <span style="font-weight:700">{{calc(r).pass?'【達閾值‧通過】':'【未達閾值‧不通過】'}}</span>
-      </div>
-      <div class="p-sign">稽核員：____________________</div>
-      <div class="p-foot"><span>維護單位：護理部護理品質管理委員會</span><span>TAIPEI CITY HOSPITAL</span></div>
+function renderGhsPicker(id,sel){
+  var c=document.getElementById(id);c.innerHTML='';
+  GHS_ORDER.forEach(function(k){
+    var on=sel.indexOf(k)>=0,lab=document.createElement('label');
+    lab.className='ghs-opt'+(on?' on':'');
+    lab.innerHTML=ghsIcon(k)+'<span>'+GHS[k].zh+'</span><input type="checkbox" value="'+k+'" '+(on?'checked':'')+'>';
+    var inp=lab.querySelector('input');
+    inp.addEventListener('change',function(){lab.classList.toggle('on',inp.checked);if(id==='ghsSingle')renderSingle();});
+    c.appendChild(lab);
+  });
+}
+function getGhs(id){var o=[];document.querySelectorAll('#'+id+' input:checked').forEach(function(i){o.push(i.value);});return o;}
+function setGhsChecks(id,arr){document.querySelectorAll('#'+id+' .ghs-opt').forEach(function(lab){var inp=lab.querySelector('input');var on=arr.indexOf(inp.value)>=0;inp.checked=on;lab.classList.toggle('on',on);});}
 
-      <!-- 該筆缺失照片附頁 -->
-      <template v-if="recDefects(r).length">
-        <div style="page-break-before:always"></div>
-        <div class="p-title">缺失照片佐證　—　{{r.unit}}</div>
-        <div class="p-photos">
-          <div v-for="(d,di) in recDefects(r)" :key="di" class="pp-full">
-            <div class="pcap-no">▲ 對應稽核項目 第 {{d.itemNo}} 項</div>
-            <img :src="d.src">
-            <div class="pcap">{{d.itemText}}<br>缺失說明：{{d.note||'—'}}</div>
-          </div>
-        </div>
-        <div class="p-foot"><span>稽核日期：中華民國 {{r.y}} 年 {{r.m}} 月 {{r.d}} 日</span><span>© 鄭瑞賢 製作</span></div>
-      </template>
-    </div>
+function readSingle(){return{name:s_name.value.trim(),max:s_max.value.trim(),min:s_min.value.trim(),ghs:getGhs('ghsSingle')};}
+function renderSingle(){document.getElementById('pvLabel').innerHTML=buildLabel(readSingle());}
 
-    <!-- 總表 -->
-    <div v-if="printMode==='summary'" class="p-page p-doc p-land">
-      <div class="p-mtitle">臺北市立聯合醫院　仁愛院區　護理品管稽核總表</div>
-      <div class="p-mhead">稽核項目：冷藏藥品冰箱管理標準作業正確率　　閾值：100%　　稽核員：{{summaryAuditor}}　　稽核日期：{{summaryDate}}</div>
-      <table class="p-matrix">
-        <colgroup>
-          <col style="width:22px"><col style="width:178px">
-          <col v-for="(r,ci) in matrix.recs" :key="'cg'+ci">
-          <col style="width:28px"><col style="width:38px"><col style="width:28px"><col style="width:38px">
-        </colgroup>
-        <tbody>
-          <tr>
-            <td class="mh" rowspan="4">題號</td>
-            <td class="mh">受稽核單位</td>
-            <td class="mh u" v-for="(r,ci) in matrix.recs" :key="'u'+ci">{{r.unit}}</td>
-            <td class="mh" colspan="2" rowspan="3">通過項目</td>
-            <td class="mh" colspan="2" rowspan="3">不通過項目</td>
-          </tr>
-          <tr>
-            <td class="mh">受稽核者</td>
-            <td class="u" v-for="(r,ci) in matrix.recs" :key="'n'+ci">{{r.ratee||''}}</td>
-          </tr>
-          <tr>
-            <td class="mh">受稽核日期</td>
-            <td class="u" v-for="(r,ci) in matrix.recs" :key="'dt'+ci">{{pad(r.m)}}/{{pad(r.d)}}</td>
-          </tr>
-          <tr>
-            <td class="mh">項目說明</td>
-            <td class="mh u" v-for="(r,ci) in matrix.recs" :key="'h'+ci">稽核結果</td>
-            <td class="mh">件數</td><td class="mh">百分比</td><td class="mh">件數</td><td class="mh">百分比</td>
-          </tr>
-          <tr v-for="(it,i) in items" :key="'it'+i">
-            <td class="c">{{i+1}}</td>
-            <td class="itxt">{{it}}</td>
-            <td class="c" v-for="(r,ci) in matrix.recs" :key="'cc'+i+'_'+ci" :class="{bad:r.answers[i]==='bad'}">{{cellVal(r,i)}}</td>
-            <td class="c">{{matrix.perItem[i].ok}}</td>
-            <td class="c">{{matrix.perItem[i].passPct}}%</td>
-            <td class="c bad">{{matrix.perItem[i].bad}}</td>
-            <td class="c">{{matrix.perItem[i].failPct}}%</td>
-          </tr>
-          <tr class="agg">
-            <td class="mh" colspan="2">通過項目</td>
-            <td class="c" v-for="(u,ci) in matrix.perUnit" :key="'po'+ci">{{u.ok}}</td>
-            <td class="c" colspan="4">{{matrix.totalOk}}</td>
-          </tr>
-          <tr class="agg">
-            <td class="mh" colspan="2">不通過項目</td>
-            <td class="c" v-for="(u,ci) in matrix.perUnit" :key="'pb'+ci">{{u.bad}}</td>
-            <td class="c" colspan="4">{{matrix.totalBad}}</td>
-          </tr>
-          <tr class="agg">
-            <td class="mh" colspan="2">不適用項目</td>
-            <td class="c" v-for="(u,ci) in matrix.perUnit" :key="'pn'+ci">{{u.na}}</td>
-            <td class="c" colspan="4">{{matrix.totalNa}}</td>
-          </tr>
-          <tr class="agg">
-            <td class="mh" colspan="2">有效稽核題數</td>
-            <td class="c" v-for="(u,ci) in matrix.perUnit" :key="'pv'+ci">{{u.valid}}</td>
-            <td class="c" colspan="4">{{matrix.totalValid}}</td>
-          </tr>
-          <tr class="agg">
-            <td class="mh" colspan="2">單一樣本通過率</td>
-            <td class="c" v-for="(u,ci) in matrix.perUnit" :key="'pr'+ci">{{u.rate}}%</td>
-            <td class="c" colspan="4">平均 {{matrix.avgRate}}%</td>
-          </tr>
-        </tbody>
-      </table>
+function chunk(a,n){var o=[];for(var i=0;i<a.length;i+=n)o.push(a.slice(i,i+n));return o;}
+function doPrint(list){if(!list.length){alert('清單沒有資料');return;}var html='';
+  chunk(list,4).forEach(function(pg){html+='<div class="print-page">';pg.forEach(function(d){html+='<div class="plabel">'+buildLabel(d)+'</div>';});html+='</div>';});
+  document.getElementById('printRoot').innerHTML=html;window.print();}
+function printOne(fill){var d=readSingle();doPrint(fill?[d,d,d,d]:[d]);}
 
-      <div class="p-botrow">
-        <table class="p-sum">
-          <tr><td class="sk">通過閾值樣本數</td><td class="sv">{{matrix.passN}}</td></tr>
-          <tr><td class="sk">稽核總樣本數</td><td class="sv">{{matrix.sampleN}}</td></tr>
-          <tr><td class="sk">總樣本通過率</td><td class="sv">{{matrix.sampleRate}}%</td></tr>
-          <tr><td class="sk">稽核通過項目平均值</td><td class="sv">{{matrix.avgRate}}%</td></tr>
-        </table>
-        <div class="p-remark">
-          <div class="p-remark-h">備註：</div>
-          <div class="p-remark-text" v-if="summaryNote">{{summaryNote}}</div>
-          <div class="rdef" v-for="d in matrix.defectList" :key="'rd'+d.n">
-            <div class="rdef-lbl">〔缺{{d.n}}〕{{d.unit}}<span v-if="d.ratee">／{{d.ratee}}</span>　第{{d.itemNo}}項：{{d.note||d.itemText}}</div>
-            <div class="rdef-photos" v-if="d.photos.length">
-              <span class="rdef-ph" v-for="(src,pi) in d.photos" :key="pi">
-                <img :src="src">
-                <span class="rdef-tag">缺{{d.n}}</span>
-              </span>
-            </div>
-          </div>
-          <div v-if="!summaryNote && !matrix.defectList.length" class="rdef-none">本次稽核無缺失項目。</div>
-        </div>
-      </div>
+var rows=[];
+var editIndex=-1;
+function readBatchForm(){return{name:b_name.value.trim(),max:b_max.value.trim(),min:b_min.value.trim(),ghs:getGhs('ghsBatch')};}
+function addBatchRow(){var d=readBatchForm();if(!d.name){alert('請先輸入水劑名稱');return;}
+  if(editIndex>=0){rows[editIndex]=d;editIndex=-1;exitEditUI();}else{rows.push(d);}
+  b_name.value='';b_max.value='';b_min.value='';setGhsChecks('ghsBatch',[]);b_name.focus();renderBatch();}
+function editRow(i){var d=rows[i];if(!d)return;editIndex=i;
+  b_name.value=d.name;b_max.value=d.max;b_min.value=d.min;setGhsChecks('ghsBatch',d.ghs||[]);
+  document.getElementById('batchAddBtn').textContent='儲存修改';
+  document.getElementById('batchCancelBtn').style.display='';
+  renderBatch();
+  try{document.getElementById('panel-batch').scrollIntoView({behavior:'smooth',block:'start'});b_name.focus();}catch(e){}}
+function exitEditUI(){var a=document.getElementById('batchAddBtn');if(a)a.textContent='＋ 新增到清單';var c=document.getElementById('batchCancelBtn');if(c)c.style.display='none';}
+function cancelEdit(){editIndex=-1;b_name.value='';b_max.value='';b_min.value='';setGhsChecks('ghsBatch',[]);exitEditUI();renderBatch();}
+function bulkImport(){var L=b_bulk.value.split(/\n/),base=readBatchForm(),n=0;
+  L.forEach(function(x){x=x.trim();if(!x)return;var p=x.split(/[,，\t]/);var nm=(p[0]||'').trim();if(!nm)return;
+    rows.push({name:nm,max:(p[1]||'').trim(),min:(p[2]||'').trim(),ghs:base.ghs.slice()});n++;});
+  if(!n){alert('沒有可匯入的資料');return;}b_bulk.value='';renderBatch();}
+function pushToBatch(){var d=readSingle();if(!d.name){alert('請先輸入水劑名稱');return;}rows.push(d);renderBatch();alert('已加入批次清單（目前 '+rows.length+' 筆）');}
+function delRow(i){rows.splice(i,1);if(editIndex===i){editIndex=-1;exitEditUI();b_name.value='';b_max.value='';b_min.value='';setGhsChecks('ghsBatch',[]);}else if(editIndex>i){editIndex--;}renderBatch();}
+function clearBatch(){if(rows.length&&confirm('確定清空清單？')){rows=[];renderBatch();}}
+function renderBatch(){
+  document.getElementById('bCount').textContent=rows.length;
+  var list=document.getElementById('batchList');
+  if(!rows.length){list.innerHTML='<div class="empty">清單目前是空的。<br>用上方表單或品項快捷新增，也可「批次貼上」匯入。</div>';return;}
+  list.innerHTML=rows.map(function(d,i){
+    return '<div class="row-card'+(i===editIndex?' editing':'')+'" onclick="editRow('+i+')"><div class="row-thumb">'+buildLabel(d)+'</div>'+
+      '<div class="row-meta"><div class="nm">'+esc(d.name)+'</div>'+
+      '<div class="dt">最大量 '+esc(d.max||'—')+'／最小量 '+esc(d.min||'—')+'　·　點此可修改</div></div>'+
+      '<button class="row-del" title="刪除" onclick="event.stopPropagation();delRow('+i+')">×</button></div>';
+  }).join('');
+}
+function printBatch(){doPrint(rows);}
 
-      <div class="p-msign">護理長核章：________________　　品管督導核章：________________　　院區主任核章：________________</div>
-      <div class="p-foot"><span>文件編號：NSR-Q-OQM-A21</span><span>© 鄭瑞賢 製作・版權所有</span></div>
-    </div>
+/* ===== 品項庫 ===== */
+var DEFAULT_LIB=[
+ {n:'丙酮（有機溶劑）',g:['flame','excl']},
+ {n:'甲醛（10%中性福馬林）',g:['skull','health','corr']},
+ {n:'石油苯清',g:['flame','health','excl']},
+ {n:'乙醇 酒精75%（大瓶）',g:['flame','excl']},
+ {n:'乙醇 酒精75%（中瓶）',g:['flame','excl']},
+ {n:'乙醇 酒精75%（小瓶）',g:['flame','excl']},
+ {n:'乙醇 酒精95%',g:['flame','excl']},
+ {n:'乙醇（99%）',g:['flame','excl']},
+ {n:'乙醇（病理染色用溶劑）',g:['flame','excl']},
+ {n:'無水酒精',g:['flame','excl']},
+ {n:'薄荷油',g:['flame','excl']},
+ {n:'氯化氫（鹽酸）',g:['corr','excl']},
+ {n:'氯化氫（濃鹽酸 32%）',g:['corr','excl']},
+ {n:'乙酸乙酯（有機溶劑）',g:['flame','excl']},
+ {n:'過氧化氫（雙氧水）',g:['oxid','corr']},
+ {n:'氨水',g:['corr','env']},
+ {n:'次氯酸鈉（漂白水）',g:['corr','env']},
+ {n:'稀釋次氯酸鈉（漂白水）',g:['excl','env']},
+ {n:'二甲苯（有機溶劑）',g:['flame','excl','health']},
+ {n:'甲醯氨',g:['health']},
+ {n:'碘',g:['excl','env']},
+ {n:'安碘酒精液',g:['flame','excl']},
+ {n:'碘化鉀',g:['excl']},
+ {n:'醋酸（酢酸）',g:['flame','corr']},
+ {n:'冰醋酸',g:['flame','corr']},
+ {n:'甲醇（有機溶劑）',g:['flame','skull','health']},
+ {n:'硫酸（特定化學物質）',g:['corr']},
+ {n:'次亞氯酸／滅菌電解次氯酸水',g:['excl']},
+ {n:'甲酸',g:['corr','excl']},
+ {n:'乙醚（有機溶劑）',g:['flame','excl']},
+ {n:'乙腈',g:['flame','excl']},
+ {n:'硝酸（69-70%・特定化學物質）',g:['corr','oxid']},
+ {n:'超級柴油',g:['flame','health','env']},
+ {n:'清潔劑',g:['excl']},
+ {n:'異丙醇（有機溶劑）',g:['flame','excl']},
+ {n:'2-丁醇（有機溶劑）',g:['flame','excl']},
+ {n:'氫氧化鈉',g:['corr']},
+ {n:'氫氧化銨（25% 氨水）',g:['corr','env']},
+ {n:'磷酸（85-90%）',g:['corr']},
+ {n:'過氯酸（70%）',g:['oxid','corr']},
+ {n:'過醋酸',g:['oxid','corr','flame']},
+ {n:'三氟乙酸',g:['corr']},
+ {n:'草酸',g:['excl']},
+ {n:'過錳酸鉀',g:['oxid','env']},
+ {n:'硝酸銀',g:['oxid','corr','env']},
+ {n:'十二基硫酸鈉（SDS）',g:['flame','excl']},
+ {n:'2-硫巴比妥',g:['excl']},
+ {n:'肝素',g:[]},
+ {n:'磷酸氫二鈉',g:[]},
+ {n:'三聚甲醛',g:['flame','health','corr']},
+ {n:'安比西林鈉',g:['health']},
+ {n:'氫可體松',g:[]},
+ {n:'2-巰基乙醇',g:['skull','corr','env']},
+ {n:'甘油磷酸二鈉',g:[]},
+ {n:'丙酸乙酯',g:['flame','excl']},
+ {n:'三乙醇胺',g:['excl']},
+ {n:'皂素（Saponins）',g:['excl','health']},
+ {n:'二硫蘇糖醇（DTT）',g:['excl']},
+ {n:'蘇木精（Haematoxylin）',g:['excl']},
+ {n:'克菌寧殺菌液 2%',g:['flame','excl']},
+ {n:'克菌寧殺菌水溶液 2%',g:['excl']},
+ {n:'除蠟劑',g:['excl']},
+ {n:'硬光蠟',g:['excl']},
+ {n:'混合氣（H₂10%+CO₂10%+N₂80%）',g:['gas','flame']},
+ {n:'二氧化碳（CO₂）',g:['gas']},
+ {n:'氧氣',g:['gas','oxid']},
+ {n:'笑氣（一氧化二氮）',g:['gas','oxid']},
+ {n:'氮氣（N₂）',g:['gas']},
+ {n:'小瓶液態二氧化碳',g:['gas']},
+ {n:'天然氣',g:['flame','gas']},
+ {n:'液態氧',g:['gas','oxid']}
+];
+var LIB_KEY='xingyan_chem_lib_v1';
+var lib=[];
+function loadLib(){try{var s=localStorage.getItem(LIB_KEY);if(s){var a=JSON.parse(s);if(a&&a.length)return a;}}catch(e){}
+  return DEFAULT_LIB.map(function(x){return{n:x.n,g:x.g.slice()};});}
+function saveLib(){try{localStorage.setItem(LIB_KEY,JSON.stringify(lib));}catch(e){}}
 
-    <!-- 總表柏拉圖 -->
-    <div v-if="printMode==='summary' && pareto" class="p-page p-doc">
-      <div class="p-title">缺失項目柏拉圖分析</div>
-      <div class="p-meta">
-        受評單位：{{filterUnit||'全部單位'}}　·　缺失總數：{{pareto.total}} 次　·　文件編號：NSR-Q-OQM-A21<br>
-        製表日期：中華民國 {{todayROC.y}} 年 {{todayROC.m}} 月 {{todayROC.d}} 日
-      </div>
-      <div style="max-width:168mm;margin:8px auto"><pareto-chart :p="pareto"></pareto-chart></div>
-      <table class="p-items" style="margin-top:6px">
-        <thead><tr><th style="width:40px">排序</th><th>稽核項目</th><th style="width:64px">缺失次數</th><th style="width:56px">百分比</th><th style="width:70px">累積%</th></tr></thead>
-        <tbody>
-          <tr v-for="(r,i) in pareto.rows" :key="r.idx">
-            <td class="c">{{i+1}}</td><td>第{{r.idx+1}}項　{{r.full}}</td>
-            <td class="c">{{r.count}}</td><td class="c">{{r.pct}}%</td><td class="c">{{r.cumPct}}%</td>
-          </tr>
-        </tbody>
-      </table>
-      <div class="p-calc" style="font-size:10.5pt;line-height:1.9">說明：依柏拉圖（Pareto）80/20 原則，累積百分比達 80% 前之項目為「重要少數」，列為優先改善重點並追蹤複查。</div>
-      <div class="p-sign">分析：____________　審核：____________</div>
-      <div class="p-foot"><span>維護單位：護理部護理品質管理委員會</span><span>© 鄭瑞賢 製作・版權所有</span></div>
-    </div>
+function matchLib(q){q=(q||'').trim().toLowerCase();if(!q)return lib;return lib.filter(function(it){return it.n.toLowerCase().indexOf(q)>=0;});}
+function renderQP(target){
+  var inp=(target==='single'?qpS:qpB),items=matchLib(inp.value);
+  var html=items.map(function(it){
+    var idx=lib.indexOf(it);
+    var ic=it.g.map(function(k){return GHS[k]?ghsIcon(k):'';}).join('');
+    return '<button type="button" class="qp-item" onclick="pickLib('+idx+',\''+target+'\')"><span class="qp-nm">'+esc(it.n)+'</span><span class="qp-ic">'+ic+'</span></button>';
+  }).join('');
+  document.getElementById(target==='single'?'qpListSingle':'qpListBatch').innerHTML=html||'<div class="qp-empty">查無品項，可在「品項庫」新增。</div>';
+}
+function pickLib(i,target){var it=lib[i];if(!it)return;
+  if(target==='single'){s_name.value=it.n;setGhsChecks('ghsSingle',it.g);renderSingle();}
+  else{b_name.value=it.n;setGhsChecks('ghsBatch',it.g);try{b_max.focus();}catch(e){}}
+}
+function refreshQP(){if(window.qpS)renderQP('single');if(window.qpB)renderQP('batch');}
 
-    <!-- 總表稽核明細（逐項正確/不正確 + 缺失照片） -->
-    <div v-if="printMode==='summary' && filtered.length" class="p-page p-doc">
-      <div class="p-title">稽核明細（各項稽核結果與缺失照片）</div>
-      <div class="p-meta" style="margin-bottom:6px">
-        受評單位：{{filterUnit||'全部單位'}}　·　文件編號：NSR-Q-OQM-A21　·　共 {{filtered.length}} 筆稽核
-      </div>
-      <div v-for="(r,ri) in filtered" :key="'det'+r.id" class="p-detail">
-        <div class="p-dhead">
-          {{ri+1}}. 受評單位：{{r.unit}}　｜　稽核日期：中華民國 {{r.y}} 年 {{r.m}} 月 {{r.d}} 日　｜　稽核者：{{r.auditor||'—'}}
-          <span class="p-dright">正確 {{calc(r).ok}}　不正確 {{calc(r).bad}}　不適用 {{calc(r).na}}　｜　正確率 {{calc(r).scored?calc(r).rate:'—'}}%　｜　<b>{{calc(r).pass?'通過':'不通過'}}</b></span>
-        </div>
-        <table class="p-items">
-          <thead><tr><th>稽核內容</th><th style="width:42px">正確</th><th style="width:52px">不正確</th><th style="width:52px">不適用</th></tr></thead>
-          <tbody>
-            <tr v-for="(it,i) in items" :key="i">
-              <td>{{i+1}}. {{it}}</td>
-              <td class="c mk">{{r.answers[i]==='ok'?'✓':''}}</td>
-              <td class="c mk" style="color:#c8201c">{{r.answers[i]==='bad'?'✓':''}}</td>
-              <td class="c mk">{{r.answers[i]==='na'?'✓':''}}</td>
-            </tr>
-          </tbody>
-        </table>
-        <div v-if="recDefects(r).length" class="p-photos" style="margin-top:7px">
-          <div class="p-deflabel">缺失照片佐證：</div>
-          <div class="pp-grid">
-            <div v-for="(d,di) in recDefects(r)" :key="di">
-              <div class="pcap-no">▲ 第 {{d.itemNo}} 項缺失</div>
-              <img :src="d.src">
-              <div class="pcap">{{d.itemText}}<br>說明：{{d.note||'—'}}</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="p-foot"><span>維護單位：護理部護理品質管理委員會</span><span>© 鄭瑞賢 製作・版權所有</span></div>
-    </div>
+function renderLibMgr(){
+  var q=(libSearch.value||'').toLowerCase();
+  document.getElementById('libCount').textContent=lib.length;
+  var idxs=[];for(var j=0;j<lib.length;j++){if(lib[j].n.toLowerCase().indexOf(q)>=0)idxs.push(j);}
+  var html=idxs.map(function(i){
+    var it=lib[i];
+    var togs=GHS_ORDER.map(function(k){var on=it.g.indexOf(k)>=0;
+      return '<button type="button" class="lib-tog'+(on?' on':'')+'" title="'+GHS[k].zh+'" onclick="toggleLibGhs('+i+',\''+k+'\')">'+ghsIcon(k)+'</button>';}).join('');
+    return '<div class="lib-row"><input class="lib-name" value="'+esc(it.n)+'" onchange="renameLib('+i+',this.value)"><div class="lib-togs">'+togs+'</div><button class="row-del" title="刪除" onclick="delLib('+i+')">×</button></div>';
+  }).join('');
+  document.getElementById('libList').innerHTML=html||'<div class="empty">查無品項。</div>';
+}
+function toggleLibGhs(i,k){var g=lib[i].g,p=g.indexOf(k);if(p>=0)g.splice(p,1);else g.push(k);saveLib();renderLibMgr();refreshQP();}
+function renameLib(i,v){lib[i].n=v.trim()||lib[i].n;saveLib();refreshQP();}
+function delLib(i){if(confirm('刪除「'+lib[i].n+'」？')){lib.splice(i,1);saveLib();renderLibMgr();refreshQP();}}
+function addLib(){lib.unshift({n:'新品項',g:[]});saveLib();if(libSearch)libSearch.value='';renderLibMgr();refreshQP();}
+function resetLib(){if(confirm('還原為內建清單？會清除自訂的修改。')){lib=DEFAULT_LIB.map(function(x){return{n:x.n,g:x.g.slice()};});saveLib();renderLibMgr();refreshQP();}}
 
-    <!-- 缺失照片登錄表 -->
-    <div v-if="printMode==='photos'" class="p-page p-doc">
-      <div class="p-title">缺失照片登錄表</div>
-      <div class="p-meta">
-        單位：{{filterUnit||'全部單位'}}　　文件編號：NSR-Q-OQM-A21　　共 {{allDefects.length}} 張<br>
-        製表日期：中華民國 {{todayROC.y}} 年 {{todayROC.m}} 月 {{todayROC.d}} 日
-      </div>
-      <div class="p-photos" style="margin-top:8px">
-        <div class="pp-grid">
-          <div v-for="(d,i) in allDefects" :key="i">
-            <div class="pcap-no">▲ 第 {{d.itemNo}} 項　{{d.unit}}</div>
-            <img :src="d.src">
-            <div class="pcap">{{d.itemText}}<br>{{d.note||'—'}}　({{d.date}})</div>
-          </div>
-        </div>
-      </div>
-      <div class="p-foot"><span>維護單位：護理部護理品質管理委員會</span><span>© 鄭瑞賢 製作・版權所有</span></div>
-    </div>
-  </div>
+function switchTab(w){
+  ['single','batch','lib'].forEach(function(t){
+    document.getElementById('panel-'+t).style.display=(t===w)?'block':'none';
+    document.getElementById('tab-'+t).setAttribute('aria-selected',t===w);
+  });
+}
 
-  <div v-if="toast" class="toast">{{toast}}</div>
-</div>
+var s_name,s_max,s_min,b_name,b_max,b_min,b_bulk,qpS,qpB,libSearch;
+function bindRefs(){['s_name','s_max','s_min','b_name','b_max','b_min','b_bulk','qpS','qpB','libSearch'].forEach(function(id){window[id]=document.getElementById(id);});}
 
-<script>
-const { createApp } = Vue;
-createApp({
-  components:{
-    'pareto-chart':{
-      props:['p'],
-      template:`
-      <svg viewBox="0 0 720 360" style="width:100%;height:auto;font-family:'標楷體',Arial,sans-serif" v-if="p">
-        <g v-for="t in p.cTicks" :key="'ct'+t">
-          <line :x1="p.padL" :x2="p.W-p.padR" :y1="p.yC(t)" :y2="p.yC(t)" stroke="#e3e9e6" stroke-width="1"/>
-          <text :x="p.padL-7" :y="p.yC(t)+4" text-anchor="end" font-size="11" fill="#6b7873">{{t}}</text>
-        </g>
-        <g v-for="t in p.pTicks" :key="'pt'+t">
-          <text :x="p.W-p.padR+7" :y="p.yP(t)+4" text-anchor="start" font-size="11" fill="#6b7873">{{t}}%</text>
-        </g>
-        <line :x1="p.padL" :x2="p.W-p.padR" :y1="p.yP80" :y2="p.yP80" stroke="#b8860b" stroke-width="1.2" stroke-dasharray="6 4"/>
-        <text :x="p.W-p.padR-3" :y="p.yP80-5" text-anchor="end" font-size="10" fill="#b8860b" font-weight="700">80%</text>
-        <g v-for="(b,i) in p.bars" :key="'b'+i">
-          <rect :x="b.x" :y="b.y" :width="b.w" :height="b.h" fill="#c8201c" stroke="#8f1714" stroke-width="0.9" rx="2"/>
-          <text :x="b.cxc" :y="b.y-6" text-anchor="middle" font-size="12" font-weight="700" fill="#1e3a44">{{b.count}}</text>
-          <text :x="b.cxc" :y="p.y0+18" text-anchor="middle" font-size="12" font-weight="700" fill="#16302a">{{b.idx+1}}</text>
-        </g>
-        <line :x1="p.padL" :x2="p.padL" :y1="p.padT" :y2="p.y0" stroke="#16302a" stroke-width="1.4"/>
-        <line :x1="p.W-p.padR" :x2="p.W-p.padR" :y1="p.padT" :y2="p.y0" stroke="#16302a" stroke-width="1.4"/>
-        <line :x1="p.padL" :x2="p.W-p.padR" :y1="p.y0" :y2="p.y0" stroke="#16302a" stroke-width="1.4"/>
-        <polyline :points="p.polyline" fill="none" stroke="#1e3a44" stroke-width="2.3"/>
-        <g v-for="(pt,i) in p.linePts" :key="'l'+i">
-          <circle :cx="pt.x" :cy="pt.y" r="4.2" fill="#fff" stroke="#1e3a44" stroke-width="2"/>
-          <text :x="pt.x" :y="pt.y-10" text-anchor="middle" font-size="10.5" font-weight="700" fill="#1e3a44">{{pt.pct}}%</text>
-        </g>
-        <text :x="15" :y="p.padT+p.plotH/2" text-anchor="middle" font-size="11" fill="#16302a" :transform="'rotate(-90 15 '+(p.padT+p.plotH/2)+')'">缺失次數（次）</text>
-        <text :x="p.W-13" :y="p.padT+p.plotH/2" text-anchor="middle" font-size="11" fill="#16302a" :transform="'rotate(90 '+(p.W-13)+' '+(p.padT+p.plotH/2)+')'">累積百分比（%）</text>
-        <text :x="(p.padL+p.W-p.padR)/2" :y="p.H-6" text-anchor="middle" font-size="11" fill="#16302a">稽核項目編號（依缺失次數由高至低排序）</text>
-      </svg>`
-    }
-  },
-  data(){
-    const now = new Date();
-    return {
-      tab:'entry',
-      methodList:['實際操作','口述','觀察法','訪談'],
-      unitList:['12西','11西','10西','9西','8東','7東','7西','6東','6西','5西','4西','ICU','ER','詠愛'],
-      items:[
-        '冰箱藥物能採一藥一盒分開裝置',
-        '每個藥盒均能標示藥物名稱，藥名易混淆者，應明顯區分擺出',
-        '藥物開瓶後能註明：開瓶日期及時間、到期日期及時間、稀釋量，個人藥物加註床號、姓名',
-        '藥品與其他檢體能分層放置',
-        '冰箱無置放任何食物',
-        '冷藏室能維持在 2-8℃',
-        '高低溫度登記單上能每班檢查記錄',
-        '冰箱存放藥品均能在有效期限內',
-        '冰箱插座能插於不斷電或緊急用電系統'
-      ],
-      form:this.blankForm(now),
-      records:[],
-      editingId:null,
-      editIndex:-1,
-      filterUnit:'',
-      summaryNote:'',
-      printMode:'one',     // one | summary | photos
-      printRecords:[],
-      toast:'',
-      _toastT:null
-    };
-  },
-  computed:{
-    stat(){ return this.calc(this.form); },
-    passed(){ return this.stat.pass; },
-    unitOptions(){ return [...new Set(this.records.map(r=>r.unit).filter(Boolean))]; },
-    filtered(){
-      let rs = this.records;
-      if(this.filterUnit) rs = rs.filter(r=>r.unit===this.filterUnit);
-      return rs;
-    },
-    summary(){
-      const f=this.filtered, total=f.length;
-      const pass=f.filter(r=>this.calc(r).pass && this.calc(r).scored>0).length;
-      let defectCount=0;
-      f.forEach(r=>r.answers.forEach(a=>{if(a==='bad')defectCount++;}));
-      return {total,pass,passRate: total? Math.round(pass/total*1000)/10 : 0, defectCount};
-    },
-    paretoData(){
-      const counts=this.items.map(()=>0);
-      this.filtered.forEach(r=>r.answers.forEach((a,i)=>{if(a==='bad')counts[i]++;}));
-      const max=Math.max(...counts,1);
-      return counts.map((c,i)=>({idx:i,count:c,short:this.items[i].slice(0,16)+(this.items[i].length>16?'…':''),
-        pct:Math.round(c/max*100)})).filter(x=>x.count>0).sort((a,b)=>b.count-a.count);
-    },
-    allDefects(){
-      const out=[];
-      this.filtered.forEach(r=>{
-        r.answers.forEach((a,i)=>{
-          if(a==='bad'){
-            (r.defects[i].photos||[]).forEach(p=>{
-              out.push({src:p.src,itemNo:i+1,itemText:this.items[i],note:r.defects[i].note,
-                unit:r.unit,date:`${r.y}/${this.pad(r.m)}/${this.pad(r.d)}`});
-            });
-          }
-        });
-      });
-      return out;
-    },
-    todayROC(){ const n=new Date(); return {y:n.getFullYear()-1911,m:n.getMonth()+1,d:n.getDate()}; },
-    pareto(){
-      const data=this.paretoData;
-      if(!data.length) return null;
-      const total=data.reduce((s,d)=>s+d.count,0);
-      let cum=0;
-      const rows=data.map(d=>{
-        cum+=d.count;
-        return {idx:d.idx,count:d.count,full:this.items[d.idx],
-          pct:Math.round(d.count/total*1000)/10,
-          cum,cumPct:Math.round(cum/total*1000)/10};
-      });
-      const maxC=Math.max(...rows.map(r=>r.count));
-      const W=720,H=360,padL=48,padR=52,padT=26,padB=86;
-      const plotW=W-padL-padR, plotH=H-padT-padB, y0=padT+plotH;
-      const n=rows.length, band=plotW/n, barW=Math.min(band*0.56,72);
-      let step=1, axMax=maxC;
-      if(maxC>6){ step=Math.ceil(maxC/5); axMax=step*Math.ceil(maxC/step); }
-      if(axMax<1) axMax=1;
-      const cTicks=[]; for(let v=0;v<=axMax;v+=step) cTicks.push(v);
-      const yC=c=>y0-(c/axMax)*plotH;
-      const yP=p=>y0-(p/100)*plotH;
-      const cx=i=>padL+band*i+band/2;
-      const bars=rows.map((r,i)=>{const y=yC(r.count);return {x:cx(i)-barW/2,y,w:barW,h:y0-y,cxc:cx(i),count:r.count,idx:r.idx};});
-      const linePts=rows.map((r,i)=>({x:cx(i),y:yP(r.cumPct),pct:r.cumPct}));
-      const polyline=linePts.map(p=>p.x.toFixed(1)+','+p.y.toFixed(1)).join(' ');
-      return {rows,total,W,H,padL,padR,padT,padB,plotW,plotH,y0,band,barW,
-        cTicks,pTicks:[0,20,40,60,80,100],bars,linePts,polyline,yP80:yP(80),yC,yP};
-    },
-    matrix(){
-      const order=this.unitList;
-      const recs=[...this.filtered].sort((a,b)=>{
-        let ia=order.indexOf(a.unit), ib=order.indexOf(b.unit);
-        if(ia<0)ia=999; if(ib<0)ib=999;
-        if(ia!==ib) return ia-ib;
-        return (a.y*10000+a.m*100+a.d)-(b.y*10000+b.m*100+b.d);
-      });
-      const perItem=this.items.map((it,i)=>{
-        let ok=0,bad=0,na=0;
-        recs.forEach(r=>{const a=r.answers[i]; if(a==='ok')ok++; else if(a==='bad')bad++; else if(a==='na')na++;});
-        const valid=ok+bad;
-        return {ok,bad,na,valid,passPct:valid?Math.round(ok/valid*1000)/10:0,failPct:valid?Math.round(bad/valid*1000)/10:0};
-      });
-      const perUnit=recs.map(r=>{const c=this.calc(r);
-        return {ok:c.ok,bad:c.bad,na:c.na,valid:c.scored,rate:c.scored?c.rate:0,pass:c.pass&&c.scored>0};});
-      const totalOk=perUnit.reduce((s,u)=>s+u.ok,0);
-      const totalBad=perUnit.reduce((s,u)=>s+u.bad,0);
-      const totalNa=perUnit.reduce((s,u)=>s+u.na,0);
-      const totalValid=perUnit.reduce((s,u)=>s+u.valid,0);
-      const sampleN=recs.length;
-      const passN=perUnit.filter(u=>u.pass).length;
-      const sampleRate=sampleN?Math.round(passN/sampleN*1000)/10:0;
-      const avgRate=sampleN?Math.round(perUnit.reduce((s,u)=>s+u.rate,0)/sampleN*10)/10:0;
-      // 缺失清單（依排序後單位）：標號 + 單位 + 題號 + 說明 + 照片
-      const defectList=[]; let dn=0;
-      recs.forEach(r=>{
-        r.answers.forEach((a,i)=>{
-          if(a==='bad'){ dn++; const d=r.defects[i]||{};
-            defectList.push({n:dn,unit:r.unit,ratee:r.ratee||'',itemNo:i+1,itemText:this.items[i],
-              note:d.note||'',photos:(d.photos||[]).map(p=>p.src)});
-          }
-        });
-      });
-      return {recs,perItem,perUnit,totalOk,totalBad,totalNa,totalValid,sampleN,passN,sampleRate,avgRate,defectList};
-    },
-    summaryDate(){
-      const r=this.filtered[0];
-      if(r) return `${r.y}.${this.pad(r.m)}.${this.pad(r.d)}`;
-      return `${this.todayROC.y}.${this.pad(this.todayROC.m)}.${this.pad(this.todayROC.d)}`;
-    },
-    summaryAuditor(){
-      const r=this.filtered.find(x=>x.auditor);
-      return r? r.auditor : '鄭瑞賢';
-    }
-  },
-  methods:{
-    blankForm(now){
-      const n = now||new Date();
-      return {
-        unit:'',ratee:'',auditor:'鄭瑞賢',
-        y:n.getFullYear()-1911, m:n.getMonth()+1, d:n.getDate(),
-        methods:[],
-        answers:Array(9).fill(null),
-        defects:Array.from({length:9},()=>({note:'',photos:[]}))
-      };
-    },
-    setAns(i,v){
-      this.form.answers[i]=v;
-      if(v!=='bad'){ this.form.defects[i]={note:'',photos:[]}; }
-    },
-    calc(rec){
-      const ok=rec.answers.filter(a=>a==='ok').length;
-      const bad=rec.answers.filter(a=>a==='bad').length;
-      const na=rec.answers.filter(a=>a==='na').length;
-      const scored=ok+bad;
-      const rate=scored? Math.round(ok/scored*1000)/10 : 0;
-      return {ok,bad,na,scored,rate,pass: scored>0 && rate>=100};
-    },
-    photoCount(r){
-      let c=0; r.answers.forEach((a,i)=>{if(a==='bad')c+=(r.defects[i].photos||[]).length;}); return c;
-    },
-    recDefects(r){
-      const out=[];
-      r.answers.forEach((a,i)=>{
-        if(a==='bad') (r.defects[i].photos||[]).forEach(p=>out.push({src:p.src,itemNo:i+1,itemText:this.items[i],note:r.defects[i].note}));
-      });
-      return out;
-    },
-    addPhotos(e,i){
-      const files=[...e.target.files];
-      files.forEach(f=>{
-        const rd=new FileReader();
-        rd.onload=ev=>{ this.compress(ev.target.result, src=>this.form.defects[i].photos.push({src})); };
-        rd.readAsDataURL(f);
-      });
-      e.target.value='';
-    },
-    compress(dataUrl, cb){
-      const img=new Image();
-      img.onload=()=>{
-        const max=1100, sc=Math.min(1,max/Math.max(img.width,img.height));
-        const cv=document.createElement('canvas');
-        cv.width=img.width*sc; cv.height=img.height*sc;
-        cv.getContext('2d').drawImage(img,0,0,cv.width,cv.height);
-        cb(cv.toDataURL('image/jpeg',0.82));
-      };
-      img.onerror=()=>cb(dataUrl);
-      img.src=dataUrl;
-    },
-    validForm(){
-      if(!this.form.unit){ this.flash('請填寫受評單位'); return false; }
-      if(this.form.answers.every(a=>a===null)){ this.flash('請至少完成一項稽核'); return false; }
-      return true;
-    },
-    saveRecord(){
-      if(!this.validForm()) return;
-      const rec=JSON.parse(JSON.stringify(this.form));
-      if(this.editingId){
-        const idx=this.records.findIndex(r=>r.id===this.editingId);
-        rec.id=this.editingId; this.records.splice(idx,1,rec);
-        this.flash('已更新稽核紀錄');
-      }else{
-        rec.id=Date.now()+'_'+Math.random().toString(36).slice(2,6);
-        this.records.push(rec);
-        this.flash('已儲存稽核紀錄');
-      }
-      this.persist(); this.resetForm();
-    },
-    editRecord(r){
-      this.form=JSON.parse(JSON.stringify(r));
-      this.editingId=r.id;
-      this.editIndex=this.records.findIndex(x=>x.id===r.id);
-      this.tab='entry';
-      window.scrollTo({top:0,behavior:'smooth'});
-    },
-    cancelEdit(){ this.resetForm(); },
-    resetForm(){
-      this.form=this.blankForm();
-      this.editingId=null; this.editIndex=-1;
-    },
-    delRecord(id){
-      if(!confirm('確定刪除此筆稽核紀錄？')) return;
-      this.records=this.records.filter(r=>r.id!==id);
-      this.persist(); this.flash('已刪除');
-    },
-    pad(n){ return String(n).padStart(2,'0'); },
-    cellVal(r,i){ const a=r.answers[i]; return a==='ok'?'1':a==='bad'?'0':''; },
-    persistNote(){ try{ localStorage.setItem('fridge_audit_note',this.summaryNote); }catch(e){} },
-    loadNote(){ try{ const v=localStorage.getItem('fridge_audit_note'); if(v!=null) this.summaryNote=v; }catch(e){} },
-    flash(msg){
-      this.toast=msg; clearTimeout(this._toastT);
-      this._toastT=setTimeout(()=>this.toast='',1800);
-    },
-    persist(){
-      try{ localStorage.setItem('fridge_audit_v1',JSON.stringify(this.records)); }
-      catch(e){ console.warn('localStorage 無法寫入',e); }
-    },
-    load(){
-      try{
-        const raw=localStorage.getItem('fridge_audit_v1');
-        if(raw) this.records=JSON.parse(raw);
-      }catch(e){ console.warn(e); }
-    },
-    // ----- print -----
-    doPrint(){ this.$nextTick(()=>setTimeout(()=>window.print(),60)); },
-    printOne(r){ this.printMode='one'; this.printRecords=[r]; this.doPrint(); },
-    printSummary(){ this.printMode='summary'; this.printRecords=[]; this.doPrint(); },
-    printPhotos(){ this.printMode='photos'; this.printRecords=[]; this.doPrint(); },
-    // ----- data -----
-    exportJSON(){
-      const blob=new Blob([JSON.stringify(this.records,null,2)],{type:'application/json'});
-      const a=document.createElement('a');
-      a.href=URL.createObjectURL(blob);
-      a.download='冷藏藥品冰箱稽核_'+this.todayROC.y+this.pad(this.todayROC.m)+this.pad(this.todayROC.d)+'.json';
-      a.click(); URL.revokeObjectURL(a.href);
-      this.flash('已匯出備份');
-    },
-    importJSON(e){
-      const f=e.target.files[0]; if(!f) return;
-      const rd=new FileReader();
-      rd.onload=ev=>{
-        try{
-          const data=JSON.parse(ev.target.result);
-          if(Array.isArray(data)){
-            if(confirm('匯入將覆蓋目前資料，確定？')){ this.records=data; this.persist(); this.flash('已匯入 '+data.length+' 筆'); }
-          }else this.flash('檔案格式不正確');
-        }catch(err){ this.flash('讀取失敗'); }
-      };
-      rd.readAsText(f); e.target.value='';
-    },
-    clearAll(){
-      if(!confirm('將清除全部稽核紀錄，建議先匯出備份。確定清除？')) return;
-      this.records=[]; this.persist(); this.flash('已清除');
-    }
-  },
-  mounted(){ this.load(); this.loadNote(); }
-}).mount('#app');
-</script>
-</body>
-</html>
+bindRefs();
+lib=loadLib();
+document.getElementById('brandmark').innerHTML=logoSVG();
+renderGhsPicker('ghsSingle',['flame','excl']);
+renderGhsPicker('ghsBatch',['flame','excl']);
+renderQP('single');renderQP('batch');renderLibMgr();
+renderSingle();renderBatch();
+</script>\n</body>\n</html>
